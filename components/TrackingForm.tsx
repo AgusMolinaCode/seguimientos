@@ -1,6 +1,6 @@
 "use client";
 
-import { getStrapiData } from "@/actions/via-cargo/track";
+import { getViaCargoData } from "@/actions/via-cargo/track";
 import { TrackingResult } from "@/components/TrackingResult";
 import { useState } from "react";
 import type { ScraperResult } from "@/actions/types";
@@ -17,7 +17,7 @@ export function TrackingForm() {
 
     try {
       console.log("Buscando tracking:", trackingNumber);
-      const data = await getStrapiData(trackingNumber);
+      const data = await getViaCargoData(trackingNumber);
       console.log("Resultado completo:", data);
       setResult(data);
     } catch (error) {
