@@ -112,6 +112,9 @@ export async function scrapeViaCargo(
         });
       }
 
+      // Extraer el estado actual del primer evento del timeline (más reciente)
+      const currentStatus = timeline.length > 0 ? timeline[0].status : "";
+
       // Extraer incidencias
       const incidentsHeading = Array.from(doc.querySelectorAll("h2")).find(
         (h) => h.textContent?.includes("Incidencias")
@@ -128,8 +131,10 @@ export async function scrapeViaCargo(
         weight,
         signedBy,
         service,
+        carrier: "Via Cargo", // Identificar la empresa transportista
         timeline,
         incidents,
+        currentStatus, // Estado actual extraído del primer evento del timeline
       };
     });
 

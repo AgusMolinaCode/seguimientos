@@ -33,7 +33,6 @@ export default function Page() {
       const [letra, boca, numero] = parts;
 
       const data = await trackBusPack({ letra, boca, numero });
-      console.log("Resultado completo:", data);
       setResult(data);
     } catch (error) {
       console.error("Error:", error);

@@ -12,6 +12,7 @@ export interface TrackingInfo {
   weight: string;
   signedBy: string;
   service: string;
+  carrier?: string; // Empresa transportista (Via Cargo, etc.)
   timeline: TimelineEvent[];
   incidents: string;
   currentStatus?: string;

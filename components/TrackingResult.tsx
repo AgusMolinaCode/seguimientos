@@ -1,4 +1,5 @@
 import type { ScraperResult } from "@/actions/types";
+import NoResult from "./NoResult";
 
 interface TrackingResultProps {
   result: ScraperResult;
@@ -6,25 +7,7 @@ interface TrackingResultProps {
 
 export function TrackingResult({ result }: TrackingResultProps) {
   if (!result.success) {
-    return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <div className="text-center py-8">
-          <div className="text-red-600 text-5xl mb-4">✗</div>
-          <h2 className="text-2xl font-bold text-red-600 mb-2">
-            Envío no encontrado
-          </h2>
-          <p className="text-gray-700 mb-4">{result.error}</p>
-          <div className="text-sm text-gray-500 mt-6 text-left max-w-md mx-auto">
-            <p className="font-semibold mb-2">Verifica que:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>El número de envío sea correcto</li>
-              <li>No tenga espacios ni caracteres especiales</li>
-              <li>El envío esté registrado en Via Cargo</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    );
+    return <NoResult result={result} />;
   }
 
   if (!result.data) {
@@ -37,11 +20,15 @@ export function TrackingResult({ result }: TrackingResultProps) {
     <div className="bg-white rounded-lg shadow-lg p-6 max-w-7xl mx-auto">
       <div className="space-y-6">
         <div className="border-b pb-4">
-          <p className="text-black text-2xl font-bold py-2">
-            {data.currentStatus}
-          </p>
-          <h2 className="text-lg font-bold text-green-600 mb-2">
-            ✓ Envío Encontrado
+          <div className="flex items-center gap-2">
+            <p className="text-blue-600 text-2xl font-bold">
+              {data.currentStatus}
+              {}
+            </p>
+          </div>
+
+          <h2 className="text-lg font-bold text-gray-500 mt-2">
+            Envío Encontrado
           </h2>
           <p className="text-gray-600">Número: {data.trackingNumber}</p>
         </div>
@@ -80,17 +67,10 @@ export function TrackingResult({ result }: TrackingResultProps) {
             </h3>
             <div className="space-y-3">
               {data.timeline.map((event, index) => {
-                // Detectar si es BusPack y es el último evento (más reciente)
-                const isBusPack = data.service === "BusPack";
-                const isLatestEvent = index === data.timeline.length - 1;
-                const shouldHighlight = isBusPack && isLatestEvent;
-
                 return (
                   <div
                     key={index}
-                    className={`flex gap-4 border-l-4 pl-4 py-2 ${
-                      shouldHighlight ? "border-green-500" : "border-blue-500"
-                    }`}
+                    className={`flex gap-4 border-l-4 pl-4 py-2`}
                   >
                     <div className="flex-1">
                       {event.location && (
@@ -99,17 +79,7 @@ export function TrackingResult({ result }: TrackingResultProps) {
                         </p>
                       )}
                       <p className="text-sm text-gray-600">
-                        {event.datetime}
-                        {shouldHighlight ? (
-                          <>
-                            {" • "}
-                            <span className="text-2xl font-bold text-black">
-                              {event.status}
-                            </span>
-                          </>
-                        ) : (
-                           <> • {event.status}</>
-                        )}
+                        {event.datetime}• {event.status}
                       </p>
                     </div>
                   </div>

@@ -115,6 +115,7 @@ export async function scrapeBusPack(
         weight,
         signedBy,
         service: "BusPack", // Servicio por defecto
+        carrier: "BusPack", // Identificar la empresa transportista
         timeline,
         incidents: "No hay incidencias.", // BusPack no muestra incidencias
         // Datos adicionales específicos de BusPack

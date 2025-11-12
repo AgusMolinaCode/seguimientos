@@ -16,7 +16,6 @@ export default function Page() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking:", trackingNumber);
       const data = await getViaCargoData(trackingNumber);
       console.log("Resultado completo:", data);
       setResult(data);
