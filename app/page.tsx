@@ -17,7 +17,7 @@ const companies = [
   {
     id: "andreani",
     name: "Andreani",
-    logo: "/andreani.png",
+    logo: "/andreani.svg",
     href: "/andreani",
   },
 ];
