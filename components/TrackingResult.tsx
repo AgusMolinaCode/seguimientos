@@ -18,17 +18,17 @@ export function TrackingResult({ result }: TrackingResultProps) {
   const { data } = result;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-7xl mx-auto">
+    <div className="bg-white rounded-lg shadow-lg p-6 mb-12 w-full mx-auto">
       <div className="space-y-6">
         <div className="border-b pb-4">
           <div className="flex items-center gap-2">
-            <p className="text-blue-600 text-2xl font-bold">
+            <p className="text-blue-600 text-2xl md:text-3xl font-bold">
               {data.currentStatus}
               {}
             </p>
           </div>
 
-          <h2 className="text-lg font-bold text-gray-500 mt-2">
+          <h2 className="text-lg md:text-xl font-bold text-gray-500 mt-2">
             Envío Encontrado
           </h2>
           <p className="text-gray-600">Número: {data.trackingNumber}</p>
@@ -38,7 +38,7 @@ export function TrackingResult({ result }: TrackingResultProps) {
 
         {data.timeline && data.timeline.length > 0 && (
           <div className="mt-6">
-            <h3 className="text-lg font-bold mb-4 text-gray-800">
+            <h3 className="text-lg md:text-xl font-bold mb-4 text-gray-800">
               Historial de Seguimiento
             </h3>
             <div className="space-y-4">
@@ -54,7 +54,7 @@ export function TrackingResult({ result }: TrackingResultProps) {
                           {event.location}
                         </p>
                       )}
-                      <p className={` ${data.service == 'BusPack' ? 'text-md' : 'text-sm'} text-gray-500 font-semibold`}>
+                      <p className={` ${data.service == 'BusPack' ? 'text-lg' : 'text-md'} text-gray-500 font-semibold`}>
                         {event.datetime} • {event.status}
                       </p>
                     </div>

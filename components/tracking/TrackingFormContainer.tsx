@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { Carrier } from "@/lib/carriers/types";
-import type { ViaCargoFormValues, BusPackFormValues } from "@/lib/carriers/schemas";
+import type { ViaCargoFormValues, BusPackFormValues, AndreaniFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 import { getViaCargoData } from "@/actions/via-cargo/track";
 import { trackBusPack } from "@/actions/buspack/track";
+import { trackAndreani } from "@/actions/andreani/track";
 import { CarrierSelector } from "./CarrierSelector";
 import { ViaCargoForm } from "./ViaCargoForm";
 import { BusPackForm } from "./BusPackForm";
+import { AndreaniForm } from "./AndreaniForm";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
 
@@ -61,6 +63,26 @@ export function TrackingFormContainer() {
     }
   };
 
+  const handleAndreaniSubmit = async (data: AndreaniFormValues) => {
+    setLoading(true);
+    setResult(null);
+
+    try {
+      console.log("Buscando tracking Andreani:", data.trackingNumber);
+      const result = await trackAndreani(data.trackingNumber);
+      console.log("Resultado Andreani:", result);
+      setResult(result);
+    } catch (error) {
+      console.error("Error Andreani:", error);
+      setResult({
+        success: false,
+        error: "Error al procesar la solicitud de Andreani"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCarrierChange = (carrier: Carrier) => {
     setSelectedCarrier(carrier);
     setResult(null);
@@ -81,6 +103,10 @@ export function TrackingFormContainer() {
 
         {selectedCarrier === Carrier.BUSPACK && (
           <BusPackForm onSubmit={handleBusPackSubmit} loading={loading} />
+        )}
+
+        {selectedCarrier === Carrier.ANDREANI && (
+          <AndreaniForm onSubmit={handleAndreaniSubmit} loading={loading} />
         )}
       </div>
 

@@ -32,6 +32,15 @@ export const CARRIER_CONFIGS: Record<Carrier, CarrierConfig> = {
       numero: "Ej: 10055",
     },
   },
+  [Carrier.ANDREANI]: {
+    id: Carrier.ANDREANI,
+    name: "andreani",
+    displayName: "Andreani",
+    description: "Seguimiento de envíos Andreani",
+    placeholder: {
+      trackingNumber: "Ej: 360002701689990",
+    },
+  },
 };
 
 /**

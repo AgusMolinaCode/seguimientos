@@ -14,6 +14,12 @@ const companies = [
     logo: "/buspack.png",
     href: "/buspack",
   },
+  {
+    id: "andreani",
+    name: "Andreani",
+    logo: "/andreani.png",
+    href: "/andreani",
+  },
 ];
 
 export default function Home() {
@@ -28,10 +34,10 @@ export default function Home() {
         </p>
 
         {/* Grid de logos de empresas */}
-        <div className="grid grid-cols-4 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 px-2 mb-12">
           {companies.map((company) => (
             <Link key={company.id} href={company.href}>
-              <button className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 flex flex-col items-center justify-center gap-4 border-2 border-transparent hover:border-blue-500 w-full cursor-pointer">
+              <button className="group bg-gray-50 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-4 flex flex-col items-center justify-center gap-4 border-2 border-gray-300 hover:border-blue-500 w-full cursor-pointer">
                 <div className="relative w-full h-12 flex items-center justify-center">
                   <Image
                     src={company.logo}

@@ -1,31 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { getViaCargoData } from "@/actions/via-cargo/track";
-import { ViaCargoForm } from "@/components/tracking";
+import { trackAndreani } from "@/actions/andreani/track";
+import { AndreaniForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
-import type { ViaCargoFormValues } from "@/lib/carriers/schemas";
+import type { AndreaniFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
-export default function ViaCargoPage() {
+export default function AndreaniPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScraperResult | null>(null);
 
-  const handleSubmit = async (data: ViaCargoFormValues) => {
+  const handleSubmit = async (data: AndreaniFormValues) => {
     setLoading(true);
     setResult(null);
 
     try {
-      console.log("Buscando tracking Via Cargo:", data.trackingNumber);
-      const result = await getViaCargoData(data.trackingNumber);
-      console.log("Resultado Via Cargo:", result);
+      console.log("Buscando tracking Andreani:", data.trackingNumber);
+      const result = await trackAndreani(data.trackingNumber);
+      console.log("Resultado Andreani:", result);
       setResult(result);
     } catch (error) {
-      console.error("Error Via Cargo:", error);
+      console.error("Error Andreani:", error);
       setResult({
         success: false,
-        error: "Error al procesar la solicitud de Via Cargo"
+        error: "Error al procesar la solicitud de Andreani"
       });
     } finally {
       setLoading(false);
@@ -36,15 +36,15 @@ export default function ViaCargoPage() {
     <div className="max-w-[90rem] mx-auto mt-12 px-4">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          Via Cargo - Seguimiento de Envíos
+          Andreani - Seguimiento de Envíos
         </h1>
         <p className="text-gray-600">
-          Ingresa tu número de tracking para consultar el estado de tu envío
+          Ingresa tu número de seguimiento de 15 dígitos para consultar el estado de tu envío
         </p>
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <ViaCargoForm onSubmit={handleSubmit} loading={loading} />
+        <AndreaniForm onSubmit={handleSubmit} loading={loading} />
       </div>
 
       {loading && <LoadingSteps />}
