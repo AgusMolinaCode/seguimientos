@@ -1,5 +1,6 @@
 import type { ScraperResult } from "@/actions/types";
 import NoResult from "./NoResult";
+import { TrackingDetails } from "./TrackingDetails";
 
 interface TrackingResultProps {
   result: ScraperResult;
@@ -33,39 +34,14 @@ export function TrackingResult({ result }: TrackingResultProps) {
           <p className="text-gray-600">Número: {data.trackingNumber}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm text-gray-500">Origen</p>
-            <p className="font-semibold text-gray-800">{data.origin}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Destino</p>
-            <p className="font-semibold text-gray-800">{data.destination}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Piezas</p>
-            <p className="font-semibold text-gray-800">{data.pieces}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Peso</p>
-            <p className="font-semibold text-gray-800">{data.weight}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Servicio</p>
-            <p className="font-semibold text-gray-800">{data.service}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Firmado por</p>
-            <p className="font-semibold text-gray-800">{data.signedBy}</p>
-          </div>
-        </div>
+        <TrackingDetails data={data} />
 
         {data.timeline && data.timeline.length > 0 && (
           <div className="mt-6">
             <h3 className="text-lg font-bold mb-4 text-gray-800">
               Historial de Seguimiento
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {data.timeline.map((event, index) => {
                 return (
                   <div
@@ -78,8 +54,8 @@ export function TrackingResult({ result }: TrackingResultProps) {
                           {event.location}
                         </p>
                       )}
-                      <p className="text-sm text-gray-600">
-                        {event.datetime}• {event.status}
+                      <p className={` ${data.service == 'BusPack' ? 'text-md' : 'text-sm'} text-gray-500 font-semibold`}>
+                        {event.datetime} • {event.status}
                       </p>
                     </div>
                   </div>

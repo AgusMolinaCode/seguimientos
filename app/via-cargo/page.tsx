@@ -1,65 +1,55 @@
 "use client";
 
-import { getViaCargoData } from "@/actions/via-cargo/track";
-import { TrackingResult } from "@/components/TrackingResult";
 import { useState } from "react";
+import { getViaCargoData } from "@/actions/via-cargo/track";
+import { ViaCargoForm } from "@/components/tracking";
+import { TrackingResult } from "@/components/TrackingResult";
+import { LoadingSteps } from "@/components/ui/LoadingSteps";
+import type { ViaCargoFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
-export default function Page() {
-  const [trackingNumber, setTrackingNumber] = useState("");
+export default function ViaCargoPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScraperResult | null>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const handleSubmit = async (data: ViaCargoFormValues) => {
     setLoading(true);
     setResult(null);
 
     try {
-      const data = await getViaCargoData(trackingNumber);
-      console.log("Resultado completo:", data);
-      setResult(data);
+      console.log("Buscando tracking Via Cargo:", data.trackingNumber);
+      const result = await getViaCargoData(data.trackingNumber);
+      console.log("Resultado Via Cargo:", result);
+      setResult(result);
     } catch (error) {
-      console.error("Error:", error);
-      setResult({ success: false, error: "Error al procesar la solicitud" });
+      console.error("Error Via Cargo:", error);
+      setResult({
+        success: false,
+        error: "Error al procesar la solicitud de Via Cargo"
+      });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="mb-8 max-w-7xl mx-auto mt-22">
-        <div className="flex gap-4">
-          <input
-            type="text"
-            value={trackingNumber}
-            onChange={(e) => setTrackingNumber(e.target.value)}
-            placeholder="Número de envío (ej: 999030148732)"
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-8 py-3 bg-blue-600 w-xs text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
-          >
-            {loading ? "Buscando..." : "Buscar"}
-          </button>
-        </div>
-      </form>
+    <div className="max-w-7xl mx-auto mt-12 px-4">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          Via Cargo - Seguimiento de Envíos
+        </h1>
+        <p className="text-gray-600">
+          Ingresa tu número de tracking para consultar el estado de tu envío
+        </p>
+      </div>
 
-      {loading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-600"></div>
-          <p className="mt-4 text-gray-600">
-            Buscando información del envío...
-          </p>
-        </div>
-      )}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <ViaCargoForm onSubmit={handleSubmit} loading={loading} />
+      </div>
+
+      {loading && <LoadingSteps />}
 
       {result && !loading && <TrackingResult result={result} />}
-    </>
+    </div>
   );
 }
