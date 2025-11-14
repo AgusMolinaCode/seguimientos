@@ -41,6 +41,15 @@ export const CARRIER_CONFIGS: Record<Carrier, CarrierConfig> = {
       trackingNumber: "Ej: 360002701689990",
     },
   },
+  [Carrier.OCA]: {
+    id: Carrier.OCA,
+    name: "oca",
+    displayName: "OCA",
+    description: "Seguimiento de envíos OCA (17track)",
+    placeholder: {
+      trackingNumber: "Ej: 5079800000002376408",
+    },
+  },
 };
 
 /**

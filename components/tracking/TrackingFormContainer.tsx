@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import { Carrier } from "@/lib/carriers/types";
-import type { ViaCargoFormValues, BusPackFormValues, AndreaniFormValues } from "@/lib/carriers/schemas";
+import type { ViaCargoFormValues, BusPackFormValues, AndreaniFormValues, OCAFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 import { getViaCargoData } from "@/actions/via-cargo/track";
 import { trackBusPack } from "@/actions/buspack/track";
 import { trackAndreani } from "@/actions/andreani/track";
+import { trackOCA } from "@/actions/oca/track";
 import { CarrierSelector } from "./CarrierSelector";
 import { ViaCargoForm } from "./ViaCargoForm";
 import { BusPackForm } from "./BusPackForm";
 import { AndreaniForm } from "./AndreaniForm";
+import { OCAForm } from "./OCAForm";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
 
@@ -83,6 +85,26 @@ export function TrackingFormContainer() {
     }
   };
 
+  const handleOCASubmit = async (data: OCAFormValues) => {
+    setLoading(true);
+    setResult(null);
+
+    try {
+      console.log("Buscando tracking OCA:", data.trackingNumber);
+      const result = await trackOCA(data.trackingNumber);
+      console.log("Resultado OCA:", result);
+      setResult(result);
+    } catch (error) {
+      console.error("Error OCA:", error);
+      setResult({
+        success: false,
+        error: "Error al procesar la solicitud de OCA"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCarrierChange = (carrier: Carrier) => {
     setSelectedCarrier(carrier);
     setResult(null);
@@ -107,6 +129,10 @@ export function TrackingFormContainer() {
 
         {selectedCarrier === Carrier.ANDREANI && (
           <AndreaniForm onSubmit={handleAndreaniSubmit} loading={loading} />
+        )}
+
+        {selectedCarrier === Carrier.OCA && (
+          <OCAForm onSubmit={handleOCASubmit} loading={loading} />
         )}
       </div>
 

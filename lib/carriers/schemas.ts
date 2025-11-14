@@ -52,12 +52,25 @@ export const andreaniSchema = z.object({
 });
 
 /**
+ * OCA validation schema
+ * Single tracking number field (uses 17track)
+ */
+export const ocaSchema = z.object({
+  carrier: z.literal(Carrier.OCA),
+  trackingNumber: z
+    .string()
+    .min(1, "El número de seguimiento es requerido")
+    .trim(),
+});
+
+/**
  * Union schema for all carriers
  */
 export const carrierFormSchema = z.discriminatedUnion("carrier", [
   viaCargoSchema,
   busPackSchema,
   andreaniSchema,
+  ocaSchema,
 ]);
 
 /**
@@ -66,4 +79,5 @@ export const carrierFormSchema = z.discriminatedUnion("carrier", [
 export type ViaCargoFormValues = z.infer<typeof viaCargoSchema>;
 export type BusPackFormValues = z.infer<typeof busPackSchema>;
 export type AndreaniFormValues = z.infer<typeof andreaniSchema>;
+export type OCAFormValues = z.infer<typeof ocaSchema>;
 export type CarrierFormValues = z.infer<typeof carrierFormSchema>;
