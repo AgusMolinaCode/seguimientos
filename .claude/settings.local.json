@@ -14,7 +14,8 @@
       "Bash(npx tsc:*)",
       "mcp__playwright__browser_snapshot",
       "Bash(npm uninstall:*)",
-      "mcp__playwright__browser_fill_form"
+      "mcp__playwright__browser_fill_form",
+      "Bash(node -e:*)"
     ],
     "deny": [],
     "ask": []

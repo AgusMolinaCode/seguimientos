@@ -1,189 +1,114 @@
 "use server";
 
-import puppeteer from "puppeteer";
-import type { ScraperResult, TrackingInfo, TimelineEvent } from "../types";
+import type { ScraperResult, TrackingInfo } from "../types";
 
+/**
+ * Interface para los datos de la tabla XML de OCA
+ */
+interface OCATableData {
+  IdLogAccion?: string;
+  NumeroEnvio?: string;
+  Motivo?: string;
+  Estado?: string;
+  IdEstado?: string;
+  Sucursal?: string;
+  Sucursal_Direccion?: string;
+  Fecha?: string;
+}
+
+/**
+ * Scraper de OCA usando la API XML oficial
+ * @param trackingNumber - Número de seguimiento de OCA
+ * @returns Resultado del tracking con timeline completo
+ */
 export async function scrapeOCA(
   trackingNumber: string
 ): Promise<ScraperResult> {
-  let browser;
-
   try {
-    // Construir URL de 17track con el tracking number y código de carrier OCA (100199)
-    const url = `https://t.17track.net/es#nums=${trackingNumber}&fc=100199`;
+    console.log("Consultando API de OCA para:", trackingNumber);
 
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-blink-features=AutomationControlled",
-        "--disable-features=IsolateOrigins,site-per-process",
-      ],
+    // Construir URL de la API XML de OCA
+    const apiUrl = `http://webservice.oca.com.ar/epak_tracking/Oep_TrackEPak.asmx/Tracking_Pieza_ConIdEstado?NumeroEnvio=${trackingNumber}`;
+
+    // Hacer petición a la API
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Accept": "application/xml, text/xml",
+      },
     });
 
-    const page = await browser.newPage();
-
-    // Configurar user agent y viewport realistas
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    await page.setViewport({ width: 1920, height: 1080 });
-
-    // Ocultar webdriver
-    await page.evaluateOnNewDocument(() => {
-      Object.defineProperty(navigator, 'webdriver', {
-        get: () => false,
-      });
-    });
-
-    // Navegar a la URL
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
-
-    // Esperar a que la página cargue completamente
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    // El hash URL no dispara la búsqueda automáticamente, necesitamos hacer clic en Track
-    // Usar evaluate para cerrar modales y hacer clic en el botón Track
-    await page.evaluate(() => {
-      // Cerrar modal de bienvenida si existe
-      const closeButtons = Array.from(document.querySelectorAll('button'));
-      const nextButton = closeButtons.find(btn => btn.textContent?.includes('Next'));
-      if (nextButton) {
-        nextButton.click();
-      }
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Hacer clic en el botón Track
-    await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      const trackButton = buttons.find(btn => btn.textContent?.includes('Track'));
-      if (trackButton) {
-        trackButton.click();
-      }
-    });
-
-    // Esperar a que se carguen los resultados
-    await new Promise(resolve => setTimeout(resolve, 12000));
-
-    // Verificar que el contenedor de resultados esté presente
-    const progressElement = await page.$('#yq-tracking-progress');
-    if (!progressElement) {
-      throw new Error('No se encontró el contenedor de tracking después de la búsqueda');
+    if (!response.ok) {
+      throw new Error(`API OCA error: ${response.status} ${response.statusText}`);
     }
 
-    // Extraer datos de tracking
-    const trackingData = await page.evaluate(() => {
-      // Función auxiliar para limpiar texto
-      const cleanText = (text: string | null | undefined): string => {
-        return text?.trim().replace(/\s+/g, " ") || "";
-      };
+    // Obtener el XML como texto
+    const xmlText = await response.text();
 
-      // Extraer estado actual desde #yq-tracking-progress h3
-      let currentStatus = "Desconocido";
-      const statusElement = document.querySelector('#yq-tracking-progress h3');
-      if (statusElement) {
-        currentStatus = cleanText(statusElement.textContent);
-      }
+    // Parsear el XML manualmente (Next.js no tiene DOMParser en el servidor)
+    const tables = parseOCAXML(xmlText);
 
-      // Extraer fecha de entrega si está disponible
-      let deliveryDate = "";
-      const progressDiv = document.querySelector('#yq-tracking-progress');
-      if (progressDiv) {
-        const spans = progressDiv.querySelectorAll('span');
-        spans.forEach(span => {
-          const text = cleanText(span.textContent);
-          // Buscar fechas en formato YYYY-MM-DD
-          if (/\d{4}-\d{2}-\d{2}/.test(text)) {
-            deliveryDate = text;
-          }
-        });
-      }
-
-      // Extraer timeline de eventos usando .yq-time
-      const timeline: Array<{ location: string; datetime: string; status: string }> = [];
-
-      // Buscar todos los elementos con clase yq-time
-      const timeElements = document.querySelectorAll('.yq-time');
-
-      timeElements.forEach(timeEl => {
-        const datetime = cleanText(timeEl.textContent);
-
-        // El status está en el siguiente span dentro del mismo contenedor padre
-        const parentDiv = timeEl.parentElement;
-        if (parentDiv) {
-          // Buscar el span con flex-1 que contiene la descripción
-          const statusSpan = parentDiv.querySelector('span.flex-1');
-          if (statusSpan) {
-            const status = cleanText(statusSpan.textContent);
-
-            if (datetime && status && datetime.length > 5 && status.length > 3) {
-              timeline.push({
-                location: "",
-                datetime,
-                status,
-              });
-            }
-          }
-        }
-      });
-
-      // Extraer información del carrier (OCA)
-      let carrier = "OCA";
-      const carrierLink = document.querySelector('a[href*="oca.com.ar"]');
-      if (carrierLink) {
-        carrier = cleanText(carrierLink.textContent) || "OCA";
-      }
-
-      // Extraer hora de sincronización
-      let syncTime = "";
-      const syncElements = document.querySelectorAll('.text-zinc-500');
-      syncElements.forEach(elem => {
-        const text = cleanText(elem.textContent);
-        if (text.includes('Hora Sincronizada')) {
-          syncTime = text;
-        }
-      });
-
-      return {
-        currentStatus,
-        deliveryDate,
-        timeline,
-        carrier,
-        syncTime,
-      };
-    });
-
-    // Verificar si obtuvimos datos
-    if (!trackingData.currentStatus || trackingData.currentStatus === "Desconocido") {
+    if (tables.length === 0) {
       return {
         success: false,
-        error: "No se pudo obtener información del envío. Verifica que el número de tracking sea correcto.",
+        error: "No se encontró información para este número de tracking. Verifica que sea correcto.",
       };
     }
 
-    // Construir mensaje informativo
-    let signedByMessage = trackingData.currentStatus;
-    if (trackingData.deliveryDate) {
-      signedByMessage = `${trackingData.currentStatus} - ${trackingData.deliveryDate}`;
+    // El último evento es el estado actual
+    const latestEvent = tables[tables.length - 1];
+    const currentStatus = latestEvent.Estado || "Desconocido";
+
+    // Buscar información de origen/destino
+    const firstEvent = tables[0];
+    const lastLocation = latestEvent.Sucursal || "N/A";
+    const lastAddress = latestEvent.Sucursal_Direccion || "N/A";
+
+    // Construir timeline (invertir para que el más reciente esté primero)
+    const timeline = tables.reverse().map((event) => {
+      const datetime = event.Fecha
+        ? formatOCADate(event.Fecha)
+        : "N/A";
+
+      const location = event.Sucursal_Direccion || event.Sucursal || "";
+
+      let status = event.Estado || "Sin información";
+      if (event.Motivo && event.Motivo !== "Sin Motivo") {
+        status += ` (${event.Motivo})`;
+      }
+
+      return {
+        datetime,
+        location,
+        status,
+      };
+    });
+
+    // Construir mensaje de estado
+    const lastEvent = tables[0]; // Ahora el primer elemento es el más reciente
+    let signedByMessage = currentStatus;
+    if (lastEvent.Fecha) {
+      signedByMessage += ` - ${formatOCADate(lastEvent.Fecha)}`;
     }
-    if (trackingData.syncTime) {
-      signedByMessage += ` (${trackingData.syncTime})`;
+    if (lastLocation !== "N/A") {
+      signedByMessage += ` - ${lastLocation}`;
     }
 
     // Construir objeto TrackingInfo
     const trackingInfo: TrackingInfo = {
       trackingNumber,
-      currentStatus: trackingData.currentStatus,
-      origin: "N/A",
-      destination: "N/A",
+      currentStatus,
+      origin: firstEvent.Sucursal || "N/A",
+      destination: lastLocation,
       pieces: "N/A",
       weight: "N/A",
       signedBy: signedByMessage,
-      service: "OCA (via 17track)",
-      carrier: trackingData.carrier,
-      timeline: trackingData.timeline,
-      incidents: "",
+      service: "OCA Argentina",
+      carrier: "OCA",
+      timeline,
+      incidents: lastEvent.Motivo && lastEvent.Motivo !== "Sin Motivo"
+        ? lastEvent.Motivo
+        : "",
     };
 
     return {
@@ -197,11 +122,65 @@ export async function scrapeOCA(
       error:
         error instanceof Error
           ? `Error al obtener información: ${error.message}`
-          : "Error desconocido al procesar la solicitud",
+          : "Error desconocido al procesar la solicitud de OCA",
     };
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
+  }
+}
+
+/**
+ * Parser simple de XML para extraer los datos de las tablas
+ * @param xmlText - Texto XML de la respuesta de OCA
+ * @returns Array de objetos con los datos de cada tabla
+ */
+function parseOCAXML(xmlText: string): OCATableData[] {
+  const tables: OCATableData[] = [];
+
+  // Buscar todos los bloques <Table>...</Table>
+  const tableRegex = /<Table[^>]*>([\s\S]*?)<\/Table>/gi;
+  const tableMatches = xmlText.matchAll(tableRegex);
+
+  for (const match of tableMatches) {
+    const tableContent = match[1];
+    const tableData: OCATableData = {};
+
+    // Extraer cada campo del XML
+    const extractField = (fieldName: string): string | undefined => {
+      const fieldRegex = new RegExp(`<${fieldName}>([\\s\\S]*?)<\/${fieldName}>`, 'i');
+      const fieldMatch = tableContent.match(fieldRegex);
+      return fieldMatch ? fieldMatch[1].trim() : undefined;
+    };
+
+    tableData.IdLogAccion = extractField('IdLogAccion');
+    tableData.NumeroEnvio = extractField('NumeroEnvio');
+    tableData.Motivo = extractField('Motivo');
+    tableData.Estado = extractField('Estado');
+    tableData.IdEstado = extractField('IdEstado');
+    tableData.Sucursal = extractField('Sucursal');
+    tableData.Sucursal_Direccion = extractField('Sucursal_Direccion');
+    tableData.Fecha = extractField('Fecha');
+
+    tables.push(tableData);
+  }
+
+  return tables;
+}
+
+/**
+ * Formatea la fecha de OCA a un formato legible
+ * @param ocaDate - Fecha en formato ISO de OCA (2024-11-26T17:32:52.787-03:00)
+ * @returns Fecha formateada (2024-11-26 17:32)
+ */
+function formatOCADate(ocaDate: string): string {
+  try {
+    const date = new Date(ocaDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  } catch {
+    return ocaDate; // Si falla el parseo, devolver el original
   }
 }

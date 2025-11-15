@@ -17,9 +17,8 @@ export default function OCAPage() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking OCA:", data.trackingNumber);
       const result = await trackOCA(data.trackingNumber);
-      console.log("Resultado OCA:", result);
+  
       setResult(result);
     } catch (error) {
       console.error("Error OCA:", error);
