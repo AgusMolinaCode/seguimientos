@@ -20,6 +20,12 @@ const companies = [
     logo: "/andreani.svg",
     href: "/andreani",
   },
+  {
+    id: "oca",
+    name: "OCA",
+    logo: "/logo-oca.jpg",
+    href: "/oca",
+  },
 ];
 
 export default function Home() {

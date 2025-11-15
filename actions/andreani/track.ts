@@ -12,7 +12,6 @@ export async function trackAndreani(
   trackingNumber: string
 ): Promise<ScraperResult> {
   try {
-    console.log("Iniciando scraping Andreani para:", trackingNumber);
 
     // Validar parámetros
     if (!trackingNumber || trackingNumber.trim().length === 0) {
