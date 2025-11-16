@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface AndreaniFormProps {
   onSubmit: (data: AndreaniFormValues) => Promise<void>;
@@ -23,6 +26,7 @@ interface AndreaniFormProps {
 
 export function AndreaniForm({ onSubmit, loading = false }: AndreaniFormProps) {
   const config = getCarrierConfig(Carrier.ANDREANI);
+  const [copied, setCopied] = useState(false);
 
   const form = useForm<AndreaniFormValues>({
     resolver: zodResolver(andreaniSchema),
@@ -31,6 +35,15 @@ export function AndreaniForm({ onSubmit, loading = false }: AndreaniFormProps) {
       trackingNumber: "",
     },
   });
+
+  const handleCopy = async () => {
+    const value = form.getValues("trackingNumber");
+    if (value) {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -42,13 +55,36 @@ export function AndreaniForm({ onSubmit, loading = false }: AndreaniFormProps) {
             <FormItem className="w-full">
               <FormLabel>Número de Seguimiento (15 dígitos)</FormLabel>
               <FormControl>
-                <Input
-                  placeholder={config.placeholder?.trackingNumber}
-                  disabled={loading}
-                  maxLength={15}
-                  {...field}
-                  className="h-10"
-                />
+                <div className="relative">
+                  <Input
+                    placeholder={config.placeholder?.trackingNumber}
+                    disabled={loading}
+                    maxLength={15}
+                    {...field}
+                    className="h-10 pr-10"
+                  />
+                  {field.value && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={handleCopy}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                          disabled={loading}
+                        >
+                          {copied ? (
+                            <Check className="h-4 w-4 text-green-600" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{copied ? "Copiado!" : "Copiar número"}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

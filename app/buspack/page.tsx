@@ -17,19 +17,18 @@ export default function BusPackPage() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking BusPack:", data);
       const result = await trackBusPack({
         letra: data.letra,
         boca: data.boca,
         numero: data.numero,
       });
-      console.log("Resultado BusPack:", result);
+
       setResult(result);
     } catch (error) {
       console.error("Error BusPack:", error);
       setResult({
         success: false,
-        error: "Error al procesar la solicitud de BusPack"
+        error: "Error al procesar la solicitud de BusPack",
       });
     } finally {
       setLoading(false);

@@ -17,15 +17,14 @@ export default function AndreaniPage() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking Andreani:", data.trackingNumber);
       const result = await trackAndreani(data.trackingNumber);
-      console.log("Resultado Andreani:", result);
+
       setResult(result);
     } catch (error) {
       console.error("Error Andreani:", error);
       setResult({
         success: false,
-        error: "Error al procesar la solicitud de Andreani"
+        error: "Error al procesar la solicitud de Andreani",
       });
     } finally {
       setLoading(false);
@@ -39,7 +38,8 @@ export default function AndreaniPage() {
           Andreani - Seguimiento de Envíos
         </h1>
         <p className="text-gray-600">
-          Ingresa tu número de seguimiento de 15 dígitos para consultar el estado de tu envío
+          Ingresa tu número de seguimiento de 15 dígitos para consultar el
+          estado de tu envío
         </p>
       </div>
 

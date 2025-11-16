@@ -12,7 +12,6 @@ export async function trackOCA(
   trackingNumber: string
 ): Promise<ScraperResult> {
   try {
-    console.log("Iniciando scraping OCA para:", trackingNumber);
 
     // Validar parámetros
     if (!trackingNumber || trackingNumber.trim().length === 0) {

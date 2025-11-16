@@ -25,7 +25,6 @@ export async function scrapeOCA(
   trackingNumber: string
 ): Promise<ScraperResult> {
   try {
-    console.log("Consultando API de OCA para:", trackingNumber);
 
     // Construir URL de la API XML de OCA
     const apiUrl = `http://webservice.oca.com.ar/epak_tracking/Oep_TrackEPak.asmx/Tracking_Pieza_ConIdEstado?NumeroEnvio=${trackingNumber}`;

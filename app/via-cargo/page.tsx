@@ -17,15 +17,14 @@ export default function ViaCargoPage() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking Via Cargo:", data.trackingNumber);
       const result = await getViaCargoData(data.trackingNumber);
-      console.log("Resultado Via Cargo:", result);
+
       setResult(result);
     } catch (error) {
       console.error("Error Via Cargo:", error);
       setResult({
         success: false,
-        error: "Error al procesar la solicitud de Via Cargo"
+        error: "Error al procesar la solicitud de Via Cargo",
       });
     } finally {
       setLoading(false);

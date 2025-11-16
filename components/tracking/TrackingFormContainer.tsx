@@ -33,9 +33,8 @@ export function TrackingFormContainer() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking Via Cargo:", data.trackingNumber);
       const result = await getViaCargoData(data.trackingNumber);
-      console.log("Resultado Via Cargo:", result);
+
       setResult(result);
     } catch (error) {
       console.error("Error Via Cargo:", error);
@@ -53,13 +52,12 @@ export function TrackingFormContainer() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking BusPack:", data);
       const result = await trackBusPack({
         letra: data.letra,
         boca: data.boca,
         numero: data.numero,
       });
-      console.log("Resultado BusPack:", result);
+
       setResult(result);
     } catch (error) {
       console.error("Error BusPack:", error);
@@ -77,9 +75,8 @@ export function TrackingFormContainer() {
     setResult(null);
 
     try {
-      console.log("Buscando tracking Andreani:", data.trackingNumber);
       const result = await trackAndreani(data.trackingNumber);
-      console.log("Resultado Andreani:", result);
+
       setResult(result);
     } catch (error) {
       console.error("Error Andreani:", error);

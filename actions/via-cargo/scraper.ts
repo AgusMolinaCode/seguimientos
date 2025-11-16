@@ -15,21 +15,17 @@ export async function scrapeViaCargo(
     const page = await browser.newPage();
     const url = `https://viacargo.com.ar/seguimiento-de-envio/${trackingNumber}/`;
 
-    console.log("Navegando a:", url);
     await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
 
     // Esperar que el iframe cargue
-    console.log("Esperando iframe...");
     await page.waitForSelector("iframe", { timeout: 15000 });
 
     // Esperar que el contenido dentro del iframe cargue
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    console.log("Obteniendo frame...");
 
     // Obtener todos los frames de la página
     const frames = page.frames();
-    console.log("Frames encontrados:", frames.length);
 
     // Buscar el frame que contiene el formulario (generalmente el segundo frame)
     let targetFrame = frames.find(frame =>
@@ -45,8 +41,7 @@ export async function scrapeViaCargo(
       throw new Error("No se pudo encontrar el iframe con los datos");
     }
 
-    console.log("Frame encontrado:", targetFrame.url());
-    console.log("Extrayendo datos...");
+
 
     // Extraer datos del frame
     const data = await targetFrame.evaluate(() => {
@@ -137,8 +132,6 @@ export async function scrapeViaCargo(
         currentStatus, // Estado actual extraído del primer evento del timeline
       };
     });
-
-    console.log("Datos extraídos:", data);
 
     // Validar que se encontraron datos válidos
     if (!data.trackingNumber || data.trackingNumber.trim() === "") {

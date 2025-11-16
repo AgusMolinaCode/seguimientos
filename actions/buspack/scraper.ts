@@ -20,17 +20,14 @@ export async function scrapeBusPack(
     // Construir URL con parámetros dinámicos
     const url = `${baseUrl}?idEmp=&Letra=${params.letra}&Boca=${params.boca}&Numero=${params.numero}`;
 
-    console.log("Navegando a:", url);
     await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
 
-    // Esperar que aparezca el contenido en el div#respuesta
-    console.log("Esperando resultados...");
+
     await page.waitForSelector("#respuesta", { timeout: 15000 });
 
     // Esperar un poco más para asegurar que todo cargó
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log("Extrayendo datos...");
 
     // Extraer datos de la página
     const data = await page.evaluate(() => {
@@ -126,7 +123,6 @@ export async function scrapeBusPack(
       };
     });
 
-    console.log("Datos extraídos:", data);
 
     // Validar que se encontraron datos válidos
     if (!data.trackingNumber || data.trackingNumber.trim() === "") {

@@ -5,7 +5,7 @@ interface ViaCargoStatusProps {
 export function ViaCargoStatus({ currentStatus }: ViaCargoStatusProps) {
   const isDelivered = currentStatus?.toLowerCase() === "entregada";
 
-  console.log("ViaCargoStatus - currentStatus:", currentStatus, "isDelivered:", isDelivered);
+ 
 
   if (isDelivered) {
     return (

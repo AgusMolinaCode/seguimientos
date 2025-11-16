@@ -13,7 +13,7 @@ export async function trackBusPack(
   params: BusPackParams
 ): Promise<ScraperResult> {
   try {
-    console.log("Iniciando scraping BusPack para:", params);
+    
 
     // Validar parámetros
     if (!params.letra || !params.boca || !params.numero) {

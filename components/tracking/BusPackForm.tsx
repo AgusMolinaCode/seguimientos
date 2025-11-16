@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Copy, Check } from "lucide-react";
+import { useState } from "react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface BusPackFormProps {
   onSubmit: (data: BusPackFormValues) => Promise<void>;
@@ -23,6 +30,7 @@ interface BusPackFormProps {
 
 export function BusPackForm({ onSubmit, loading = false }: BusPackFormProps) {
   const config = getCarrierConfig(Carrier.BUSPACK);
+  const [copied, setCopied] = useState(false);
 
   const form = useForm<BusPackFormValues>({
     resolver: zodResolver(busPackSchema),
@@ -34,15 +42,28 @@ export function BusPackForm({ onSubmit, loading = false }: BusPackFormProps) {
     },
   });
 
+  const handleCopy = async () => {
+    const letra = form.getValues("letra");
+    const boca = form.getValues("boca");
+    const numero = form.getValues("numero");
+
+    if (letra && boca && numero) {
+      const fullNumber = `${letra}-${boca}-${numero}`;
+      await navigator.clipboard.writeText(fullNumber);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-4 gap-4 items-end">
+        <div className="flex flex-wrap md:flex-nowrap gap-4 items-end">
           <FormField
             control={form.control}
             name="letra"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full md:w-20">
                 <FormLabel>Letra</FormLabel>
                 <FormControl>
                   <Input
@@ -50,6 +71,7 @@ export function BusPackForm({ onSubmit, loading = false }: BusPackFormProps) {
                     maxLength={1}
                     disabled={loading}
                     {...field}
+                    className="h-10"
                   />
                 </FormControl>
                 <FormMessage />
@@ -61,13 +83,14 @@ export function BusPackForm({ onSubmit, loading = false }: BusPackFormProps) {
             control={form.control}
             name="boca"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full md:w-1/2">
                 <FormLabel>Boca</FormLabel>
                 <FormControl>
                   <Input
                     placeholder={config.placeholder?.boca}
                     disabled={loading}
                     {...field}
+                    className="h-10"
                   />
                 </FormControl>
                 <FormMessage />
@@ -79,20 +102,53 @@ export function BusPackForm({ onSubmit, loading = false }: BusPackFormProps) {
             control={form.control}
             name="numero"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full md:w-1/2">
                 <FormLabel>Número</FormLabel>
                 <FormControl>
                   <Input
                     placeholder={config.placeholder?.numero}
                     disabled={loading}
                     {...field}
+                    className="h-10"
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={loading} className="w-full h-10">
+
+          {form.watch("letra") &&
+            form.watch("boca") &&
+            form.watch("numero") && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    onClick={handleCopy}
+                    variant="outline"
+                    size="icon"
+                    disabled={loading}
+                    className="h-10 w-10 md:mt-1"
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {copied
+                      ? "¡Copiado!"
+                      : `Copiar ${form.watch("letra")}-${form.watch(
+                          "boca"
+                        )}-${form.watch("numero")}`}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          <Button type="submit" disabled={loading} className="w-full md:w-auto h-10 md:mt-1">
             {loading ? "Buscando..." : "Buscar Envío"}
           </Button>
         </div>
