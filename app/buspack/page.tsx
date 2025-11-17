@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { trackBusPackWithCache } from "@/actions/cached-track";
 import { BusPackForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
@@ -9,6 +10,9 @@ import type { BusPackFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
 export default function BusPackPage() {
+  const searchParams = useSearchParams();
+  const initialTracking = searchParams.get("tracking") || "";
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScraperResult | null>(null);
 
@@ -47,7 +51,7 @@ export default function BusPackPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <BusPackForm onSubmit={handleSubmit} loading={loading} />
+        <BusPackForm onSubmit={handleSubmit} loading={loading} initialValue={initialTracking} />
       </div>
 
       {loading && <LoadingSteps />}

@@ -5,6 +5,7 @@ import { getViaCargoData } from "@/actions/via-cargo/track";
 import { trackBusPack } from "@/actions/buspack/track";
 import { trackOCA } from "@/actions/oca/track";
 import { trackAndreani } from "@/actions/andreani/track";
+import { trackCorreoArgentino } from "@/actions/correo-argentino/track";
 import type { ScraperResult } from "@/actions/types";
 
 // ⚠️ CACHING STRATEGY DECISION (HUMAN INPUT):
@@ -102,10 +103,31 @@ async function getCachedAndreaniData(
   return trackAndreani(trackingNumber);
 }
 
+/**
+ * Cached Correo Argentino tracking query
+ * Cache duration: 4-6 hours
+ */
+async function getCachedCorreoArgentinoData(
+  trackingNumber: string
+): Promise<ScraperResult> {
+  "use cache";
+
+  cacheLife({
+    stale: 300,
+    revalidate: 14400,
+    expire: 21600,
+  });
+
+  cacheTag(`correo-argentino-${trackingNumber}`);
+
+  return trackCorreoArgentino(trackingNumber);
+}
+
 // Export all cached functions
 export {
   getCachedViaCargoData,
   getCachedBusPackData,
   getCachedOCAData,
   getCachedAndreaniData,
+  getCachedCorreoArgentinoData,
 };

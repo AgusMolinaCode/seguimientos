@@ -7,6 +7,7 @@ export enum Carrier {
   BUSPACK = "buspack",
   ANDREANI = "andreani",
   OCA = "oca",
+  CORREO_ARGENTINO = "correo-argentino",
 }
 
 export interface BaseCarrierFormData {
@@ -35,4 +36,9 @@ export interface OCAFormData extends BaseCarrierFormData {
   trackingNumber: string;
 }
 
-export type CarrierFormData = ViaCargoFormData | BusPackFormData | AndreaniFormData | OCAFormData;
+export interface CorreoArgentinoFormData extends BaseCarrierFormData {
+  carrier: Carrier.CORREO_ARGENTINO;
+  trackingNumber: string;
+}
+
+export type CarrierFormData = ViaCargoFormData | BusPackFormData | AndreaniFormData | OCAFormData | CorreoArgentinoFormData;

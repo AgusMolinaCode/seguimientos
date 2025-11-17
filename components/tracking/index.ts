@@ -3,3 +3,4 @@ export { ViaCargoForm } from "./ViaCargoForm";
 export { BusPackForm } from "./BusPackForm";
 export { AndreaniForm } from "./AndreaniForm";
 export { CarrierSelector } from "./CarrierSelector";
+export { CorreoArgentinoForm } from "./CorreoArgentinoForm";

@@ -50,6 +50,15 @@ export const CARRIER_CONFIGS: Record<Carrier, CarrierConfig> = {
       trackingNumber: "Ej: 5079800000002376408",
     },
   },
+  [Carrier.CORREO_ARGENTINO]: {
+    id: Carrier.CORREO_ARGENTINO,
+    name: "correo-argentino",
+    displayName: "Correo Argentino",
+    description: "Seguimiento de envíos Correo Argentino",
+    placeholder: {
+      trackingNumber: "Ej: HC261803236AR",
+    },
+  },
 };
 
 /**

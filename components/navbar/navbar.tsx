@@ -8,7 +8,7 @@ const navbar = () => {
       <Link href="/">
         <div className="flex items-center gap-2 md:gap-4">
           <Image src="/logo.png" alt="Logo" width={50} height={50} />
-          <p className="text-xl md:text-2xl font-bold text-blue-600">SM Envios</p>
+          <p className="text-xl md:text-2xl font-bold text-black">SM Envios</p>
         </div>
       </Link>
       <div>
@@ -17,7 +17,7 @@ const navbar = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <p className="text-lg md:text-xl font-bold hover:bg-blue-400/20 p-2 duration-300 rounded-lg cursor-pointer text-blue-600">
+          <p className="text-lg md:text-xl font-bold hover:bg-blue-400/20 p-2 duration-300 rounded-lg cursor-pointer text-black">
             Contacto
           </p>
         </Link>

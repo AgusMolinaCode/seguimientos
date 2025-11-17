@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { viaCargoSchema, type ViaCargoFormValues } from "@/lib/carriers/schemas";
+import { correoArgentinoSchema, type CorreoArgentinoFormValues } from "@/lib/carriers/schemas";
 import { Carrier } from "@/lib/carriers/types";
 import { getCarrierConfig } from "@/lib/carriers/config";
 import {
@@ -19,20 +19,20 @@ import { Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
-interface ViaCargoFormProps {
-  onSubmit: (data: ViaCargoFormValues) => Promise<void>;
+interface CorreoArgentinoFormProps {
+  onSubmit: (data: CorreoArgentinoFormValues) => Promise<void>;
   loading?: boolean;
   initialValue?: string;
 }
 
-export function ViaCargoForm({ onSubmit, loading = false, initialValue = "" }: ViaCargoFormProps) {
-  const config = getCarrierConfig(Carrier.VIA_CARGO);
+export function CorreoArgentinoForm({ onSubmit, loading = false, initialValue = "" }: CorreoArgentinoFormProps) {
+  const config = getCarrierConfig(Carrier.CORREO_ARGENTINO);
   const [copied, setCopied] = useState(false);
 
-  const form = useForm<ViaCargoFormValues>({
-    resolver: zodResolver(viaCargoSchema),
+  const form = useForm<CorreoArgentinoFormValues>({
+    resolver: zodResolver(correoArgentinoSchema),
     defaultValues: {
-      carrier: Carrier.VIA_CARGO,
+      carrier: Carrier.CORREO_ARGENTINO,
       trackingNumber: initialValue,
     },
   });
@@ -54,14 +54,17 @@ export function ViaCargoForm({ onSubmit, loading = false, initialValue = "" }: V
           name="trackingNumber"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Número de Tracking</FormLabel>
+              <FormLabel>Número de Seguimiento</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
                     placeholder={config.placeholder?.trackingNumber}
                     disabled={loading}
                     {...field}
-                    className="h-10 pr-10"
+                    className="h-10 pr-10 uppercase"
+                    onChange={(e) => {
+                      field.onChange(e.target.value.toUpperCase());
+                    }}
                   />
                   {field.value && (
                     <Tooltip>
@@ -80,7 +83,7 @@ export function ViaCargoForm({ onSubmit, loading = false, initialValue = "" }: V
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{copied ? "Copiado!" : "Copiar número"}</p>
+                        <p>{copied ? "¡Copiado!" : "Copiar número"}</p>
                       </TooltipContent>
                     </Tooltip>
                   )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { trackViaCargoWithCache } from "@/actions/cached-track";
 import { ViaCargoForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
@@ -9,6 +10,9 @@ import type { ViaCargoFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
 export default function ViaCargoPage() {
+  const searchParams = useSearchParams();
+  const initialTracking = searchParams.get("tracking") || "";
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScraperResult | null>(null);
 
@@ -43,7 +47,7 @@ export default function ViaCargoPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <ViaCargoForm onSubmit={handleSubmit} loading={loading} />
+        <ViaCargoForm onSubmit={handleSubmit} loading={loading} initialValue={initialTracking} />
       </div>
 
       {loading && <LoadingSteps />}

@@ -9,7 +9,7 @@ const HISTORY_FILE = path.join(process.cwd(), "data", "tracking-history.json");
 
 export interface HistoryEntry {
   id: string;
-  carrier: "via-cargo" | "buspack" | "oca" | "andreani";
+  carrier: "via-cargo" | "buspack" | "oca" | "andreani" | "correo-argentino";
   trackingNumber: string;
   timestamp: number;
   lastStatus: string;
@@ -106,6 +106,15 @@ export async function getHistoryByCarrier(
 ): Promise<HistoryEntry[]> {
   const history = await readHistory();
   return history.filter((entry) => entry.carrier === carrier);
+}
+
+/**
+ * Delete a specific history entry by ID
+ */
+export async function deleteHistoryEntry(id: string): Promise<void> {
+  const history = await readHistory();
+  const filteredHistory = history.filter((entry) => entry.id !== id);
+  await writeHistory(filteredHistory);
 }
 
 /**

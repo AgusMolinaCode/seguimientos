@@ -26,19 +26,24 @@ import {
 interface BusPackFormProps {
   onSubmit: (data: BusPackFormValues) => Promise<void>;
   loading?: boolean;
+  initialValue?: string;
 }
 
-export function BusPackForm({ onSubmit, loading = false }: BusPackFormProps) {
+export function BusPackForm({ onSubmit, loading = false, initialValue = "" }: BusPackFormProps) {
   const config = getCarrierConfig(Carrier.BUSPACK);
   const [copied, setCopied] = useState(false);
+
+  // Parse initialValue (format: "A-123-456" or empty)
+  const parsedValues = initialValue ? initialValue.split("-") : ["", "", ""];
+  const [letra, boca, numero] = parsedValues.length === 3 ? parsedValues : ["", "", ""];
 
   const form = useForm<BusPackFormValues>({
     resolver: zodResolver(busPackSchema),
     defaultValues: {
       carrier: Carrier.BUSPACK,
-      letra: "",
-      boca: "",
-      numero: "",
+      letra: letra,
+      boca: boca,
+      numero: numero,
     },
   });
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { trackOCAWithCache } from "@/actions/cached-track";
 import { OCAForm } from "@/components/tracking/OCAForm";
 import { TrackingResult } from "@/components/TrackingResult";
@@ -9,6 +10,9 @@ import type { OCAFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
 export default function OCAPage() {
+  const searchParams = useSearchParams();
+  const initialTracking = searchParams.get("tracking") || "";
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScraperResult | null>(null);
 
@@ -43,7 +47,7 @@ export default function OCAPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <OCAForm onSubmit={handleSubmit} loading={loading} />
+        <OCAForm onSubmit={handleSubmit} loading={loading} initialValue={initialTracking} />
       </div>
 
       {loading && <LoadingSteps />}

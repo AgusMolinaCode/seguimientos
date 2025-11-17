@@ -22,9 +22,10 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 interface AndreaniFormProps {
   onSubmit: (data: AndreaniFormValues) => Promise<void>;
   loading?: boolean;
+  initialValue?: string;
 }
 
-export function AndreaniForm({ onSubmit, loading = false }: AndreaniFormProps) {
+export function AndreaniForm({ onSubmit, loading = false, initialValue = "" }: AndreaniFormProps) {
   const config = getCarrierConfig(Carrier.ANDREANI);
   const [copied, setCopied] = useState(false);
 
@@ -32,7 +33,7 @@ export function AndreaniForm({ onSubmit, loading = false }: AndreaniFormProps) {
     resolver: zodResolver(andreaniSchema),
     defaultValues: {
       carrier: Carrier.ANDREANI,
-      trackingNumber: "",
+      trackingNumber: initialValue,
     },
   });
 

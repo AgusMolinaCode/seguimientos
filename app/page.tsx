@@ -28,6 +28,12 @@ const companies = [
     logo: "/logo-oca.jpg",
     href: "/oca",
   },
+  {
+    id: "correo-argentino",
+    name: "Correo Argentino",
+    logo: "/correo-argentino.png",
+    href: "/correo-argentino",
+  },
 ];
 
 function RecentTrackingFallback() {
@@ -59,7 +65,7 @@ export default function Home() {
         </p>
 
         {/* Grid de logos de empresas */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 px-2 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 px-2 mb-12">
           {companies.map((company) => (
             <Link key={company.id} href={company.href}>
               <button className="group bg-gray-50 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-4 flex flex-col items-center justify-center gap-4 border-2 border-gray-300 hover:border-blue-500 w-full cursor-pointer">
@@ -67,7 +73,7 @@ export default function Home() {
                   <Image
                     src={company.logo}
                     alt={company.name}
-                    width={200}
+                    width={160}
                     height={80}
                     className="object-contain group-hover:scale-105 transition-transform duration-300"
                   />

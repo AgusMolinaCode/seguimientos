@@ -5,6 +5,7 @@ import {
   getCachedBusPackData,
   getCachedOCAData,
   getCachedAndreaniData,
+  getCachedCorreoArgentinoData,
 } from "@/lib/cache/cached-tracking";
 import { addToHistory } from "@/lib/history/tracking-history";
 import type { ScraperResult } from "./types";
@@ -75,6 +76,23 @@ export async function trackAndreaniWithCache(
   // If successful, add to history
   if (result.success && result.data) {
     await addToHistory("andreani", trackingNumber, result.data);
+  }
+
+  return result;
+}
+
+/**
+ * Track Correo Argentino shipment with caching and history
+ */
+export async function trackCorreoArgentinoWithCache(
+  trackingNumber: string
+): Promise<ScraperResult> {
+  // Get cached result
+  const result = await getCachedCorreoArgentinoData(trackingNumber);
+
+  // If successful, add to history
+  if (result.success && result.data) {
+    await addToHistory("correo-argentino", trackingNumber, result.data);
   }
 
   return result;

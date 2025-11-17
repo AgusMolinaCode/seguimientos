@@ -64,6 +64,19 @@ export const ocaSchema = z.object({
 });
 
 /**
+ * Correo Argentino validation schema
+ * Single tracking number field with alphanumeric validation
+ */
+export const correoArgentinoSchema = z.object({
+  carrier: z.literal(Carrier.CORREO_ARGENTINO),
+  trackingNumber: z
+    .string()
+    .min(1, "El número de seguimiento es requerido")
+    .trim()
+    .regex(/^[A-Z0-9]+$/, "El número debe contener solo letras mayúsculas y dígitos"),
+});
+
+/**
  * Union schema for all carriers
  */
 export const carrierFormSchema = z.discriminatedUnion("carrier", [
@@ -71,6 +84,7 @@ export const carrierFormSchema = z.discriminatedUnion("carrier", [
   busPackSchema,
   andreaniSchema,
   ocaSchema,
+  correoArgentinoSchema,
 ]);
 
 /**
@@ -80,4 +94,5 @@ export type ViaCargoFormValues = z.infer<typeof viaCargoSchema>;
 export type BusPackFormValues = z.infer<typeof busPackSchema>;
 export type AndreaniFormValues = z.infer<typeof andreaniSchema>;
 export type OCAFormValues = z.infer<typeof ocaSchema>;
+export type CorreoArgentinoFormValues = z.infer<typeof correoArgentinoSchema>;
 export type CarrierFormValues = z.infer<typeof carrierFormSchema>;

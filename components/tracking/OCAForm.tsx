@@ -22,9 +22,10 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 interface OCAFormProps {
   onSubmit: (data: OCAFormValues) => Promise<void>;
   loading?: boolean;
+  initialValue?: string;
 }
 
-export function OCAForm({ onSubmit, loading = false }: OCAFormProps) {
+export function OCAForm({ onSubmit, loading = false, initialValue = "" }: OCAFormProps) {
   const config = getCarrierConfig(Carrier.OCA);
   const [copied, setCopied] = useState(false);
 
@@ -32,7 +33,7 @@ export function OCAForm({ onSubmit, loading = false }: OCAFormProps) {
     resolver: zodResolver(ocaSchema),
     defaultValues: {
       carrier: Carrier.OCA,
-      trackingNumber: "",
+      trackingNumber: initialValue,
     },
   });
 
