@@ -15,7 +15,8 @@
       "mcp__playwright__browser_snapshot",
       "Bash(npm uninstall:*)",
       "mcp__playwright__browser_fill_form",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

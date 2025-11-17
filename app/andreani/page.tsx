@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trackAndreani } from "@/actions/andreani/track";
+import { trackAndreaniWithCache } from "@/actions/cached-track";
 import { AndreaniForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
@@ -17,7 +17,7 @@ export default function AndreaniPage() {
     setResult(null);
 
     try {
-      const result = await trackAndreani(data.trackingNumber);
+      const result = await trackAndreaniWithCache(data.trackingNumber);
 
       setResult(result);
     } catch (error) {

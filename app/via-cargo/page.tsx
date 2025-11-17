@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getViaCargoData } from "@/actions/via-cargo/track";
+import { trackViaCargoWithCache } from "@/actions/cached-track";
 import { ViaCargoForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
@@ -17,7 +17,7 @@ export default function ViaCargoPage() {
     setResult(null);
 
     try {
-      const result = await getViaCargoData(data.trackingNumber);
+      const result = await trackViaCargoWithCache(data.trackingNumber);
 
       setResult(result);
     } catch (error) {

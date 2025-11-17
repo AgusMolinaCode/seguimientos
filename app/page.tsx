@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import { RecentTracking } from "@/components/RecentTracking";
 
 const companies = [
   {
@@ -28,10 +30,27 @@ const companies = [
   },
 ];
 
+function RecentTrackingFallback() {
+  return (
+    <div className="w-full max-w-7xl mt-12">
+      <div className="bg-white rounded-xl shadow-md p-8">
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-200 rounded w-1/3 mb-6"></div>
+          <div className="grid md:grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-32 bg-gray-100 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center py-14">
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-7xl">
         <h1 className="text-4xl font-bold mb-4 text-center text-gray-800">
           Seguimiento de Envíos
         </h1>
@@ -61,6 +80,11 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* Recent tracking queries dashboard */}
+      <Suspense fallback={<RecentTrackingFallback />}>
+        <RecentTracking />
+      </Suspense>
     </div>
   );
 }

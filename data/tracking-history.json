@@ -1,0 +1,204 @@
+[
+  {
+    "id": "oca-5079800000002548207",
+    "carrier": "oca",
+    "trackingNumber": "5079800000002548207",
+    "timestamp": 1763348415807,
+    "lastStatus": "Pendiente de Ingreso a OCA - Suc: FLORES",
+    "data": {
+      "trackingNumber": "5079800000002548207",
+      "currentStatus": "Pendiente de Ingreso a OCA - Suc: FLORES",
+      "origin": "Suc: FLORES",
+      "destination": "Suc: FLORES",
+      "pieces": "N/A",
+      "weight": "N/A",
+      "signedBy": "Pendiente de Ingreso a OCA - Suc: FLORES - 2025-11-10 09:50 - Suc: FLORES",
+      "service": "OCA Argentina",
+      "carrier": "OCA",
+      "timeline": [
+        {
+          "datetime": "2025-11-10 09:50",
+          "location": "FRAY CAYETANO RODRIGUEZ 27, CAPITAL FEDERAL, CAPITAL FEDERAL",
+          "status": "Pendiente de Ingreso a OCA - Suc: FLORES"
+        }
+      ],
+      "incidents": ""
+    }
+  },
+  {
+    "id": "andreani-360002702729990",
+    "carrier": "andreani",
+    "trackingNumber": "360002702729990",
+    "timestamp": 1763348351912,
+    "lastStatus": "Entregado",
+    "data": {
+      "trackingNumber": "360002702729990",
+      "currentStatus": "Entregado",
+      "origin": "N/A",
+      "destination": "N/A",
+      "pieces": "N/A",
+      "weight": "N/A",
+      "signedBy": "Tu envío fue entregado el sábado 23 de agosto a las 12:04hs",
+      "service": "Andreani",
+      "carrier": "Andreani",
+      "timeline": [
+        {
+          "location": "",
+          "datetime": "25-08-2025 12:59 hs.",
+          "status": "Entregado - Ya entregamos tu envío.Agradecemos tu colaboración en la entrega."
+        },
+        {
+          "location": "",
+          "datetime": "25-08-2025 12:59 hs.",
+          "status": "Entregado - Ya entregamos tu envío.Agradecemos tu colaboración en la entrega.Por favor, desestimá la novedad anterior. Te pedimos disculpas por la confusión que pudo haberse ocasionado."
+        },
+        {
+          "location": "",
+          "datetime": "23-08-2025 12:04 hs.",
+          "status": "Entregado - Ya entregamos tu envío.Agradecemos tu colaboración en la entrega."
+        },
+        {
+          "location": "",
+          "datetime": "23-08-2025 12:04 hs.",
+          "status": "En camino - Hoy te visitaremos para entregarte tu envío."
+        },
+        {
+          "location": "",
+          "datetime": "22-08-2025 15:17 hs.",
+          "status": "En sucursal - Ya podés retirar tu envío en sucursal Mar Del Plata (ruta 88).Tenés tiempo hasta el 02/09/2025."
+        },
+        {
+          "location": "",
+          "datetime": "22-08-2025 07:26 hs.",
+          "status": "En camino - La sucursal Mar Del Plata (ruta 88) ya está procesando tu envío. ¡Pronto tendrás novedades!"
+        },
+        {
+          "location": "",
+          "datetime": "20-08-2025 12:20 hs.",
+          "status": "En camino - Tu envío se encuentra en camino a la sucursal Mar Del Plata (ruta 88)."
+        },
+        {
+          "location": "",
+          "datetime": "19-08-2025 15:48 hs.",
+          "status": "En camino - Tu envío se encuentra en camino."
+        },
+        {
+          "location": "",
+          "datetime": "19-08-2025 15:09 hs.",
+          "status": "Ingresado - Tu envío fue recibido. Pronto lo enviaremos a la sucursal encargada de la entrega."
+        },
+        {
+          "location": "",
+          "datetime": "18-08-2025 15:54 hs.",
+          "status": "Pendiente de ingreso - Tu envío se encuentra pendiente de ingreso."
+        }
+      ],
+      "incidents": ""
+    }
+  },
+  {
+    "id": "buspack-r-3101-10055",
+    "carrier": "buspack",
+    "trackingNumber": "r-3101-10055",
+    "timestamp": 1763348334601,
+    "lastStatus": "Entregado",
+    "data": {
+      "trackingNumber": "R-3101-10055",
+      "origin": "",
+      "destination": "CHIVILCOY (BUE)",
+      "pieces": "1",
+      "weight": "No especificado",
+      "signedBy": "LEONARDO",
+      "service": "BusPack",
+      "carrier": "BusPack",
+      "timeline": [
+        {
+          "location": "",
+          "datetime": "10/06/2025 04:05",
+          "status": "Entregado"
+        },
+        {
+          "location": "",
+          "datetime": "24/09/2025 13:59",
+          "status": "En Agencia Origen"
+        },
+        {
+          "location": "",
+          "datetime": "25/09/2025 13:09",
+          "status": "En camino"
+        },
+        {
+          "location": "",
+          "datetime": "27/09/2025 17:25",
+          "status": "En Agencia Destino"
+        }
+      ],
+      "incidents": "No hay incidencias.",
+      "currentStatus": "Entregado",
+      "deliveryDate": "2025-10-06 16:05:18",
+      "pieceNumbers": "1609366-25",
+      "documentType": ""
+    }
+  },
+  {
+    "id": "via-cargo-999030148732",
+    "carrier": "via-cargo",
+    "trackingNumber": "999030148732",
+    "timestamp": 1763348315806,
+    "lastStatus": "ENTREGADA",
+    "data": {
+      "trackingNumber": "999030148732",
+      "origin": "AV. JUAN BAUTITA ALBERDI 4788, PARQUE AVELLANEDA - ALBERDI",
+      "destination": "AV. URQUIZA 809, CHIVILCOY",
+      "pieces": "1",
+      "weight": "1 Kg",
+      "signedBy": "28391299",
+      "service": "VIA CARGO ESTANDAR",
+      "carrier": "Via Cargo",
+      "timeline": [
+        {
+          "location": "CHIVILCOY - URQUIZA",
+          "datetime": "03/10/2025 16:05",
+          "status": "ENTREGADA"
+        },
+        {
+          "location": "AG CHIVILCOY",
+          "datetime": "03/10/2025 16:01",
+          "status": "Anulacion de Cobro"
+        },
+        {
+          "location": "CHIVILCOY - URQUIZA",
+          "datetime": "02/10/2025 12:04",
+          "status": "RECIBIDO EN DESTINO"
+        },
+        {
+          "location": "CENTRO DE DISTRIBUCION CENTRAL",
+          "datetime": "02/10/2025 04:20",
+          "status": "EN VIAJE"
+        },
+        {
+          "location": "CENTRO DE DISTRIBUCION CENTRAL",
+          "datetime": "02/10/2025 00:47",
+          "status": "LLEGADA A CENTRO DE DISTRIBUCION"
+        },
+        {
+          "location": "CENTRO DE DISTRIBUCION CENTRAL",
+          "datetime": "02/10/2025 12:03",
+          "status": "Recepcionado en centro de distribución"
+        },
+        {
+          "location": "PARQUE AVELLANEDA - ALBERDI",
+          "datetime": "01/10/2025 15:55",
+          "status": "EN VIAJE A CD"
+        },
+        {
+          "location": "PARQUE AVELLANEDA - ALBERDI",
+          "datetime": "01/10/2025 11:45",
+          "status": "INGRESO A VIA CARGO"
+        }
+      ],
+      "incidents": "No hay incidencias.",
+      "currentStatus": "ENTREGADA"
+    }
+  }
+]

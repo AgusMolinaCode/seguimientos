@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trackOCA } from "@/actions/oca/track";
+import { trackOCAWithCache } from "@/actions/cached-track";
 import { OCAForm } from "@/components/tracking/OCAForm";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
@@ -17,7 +17,7 @@ export default function OCAPage() {
     setResult(null);
 
     try {
-      const result = await trackOCA(data.trackingNumber);
+      const result = await trackOCAWithCache(data.trackingNumber);
   
       setResult(result);
     } catch (error) {

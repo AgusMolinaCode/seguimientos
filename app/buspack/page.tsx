@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { trackBusPack } from "@/actions/buspack/track";
+import { trackBusPackWithCache } from "@/actions/cached-track";
 import { BusPackForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
@@ -17,11 +17,11 @@ export default function BusPackPage() {
     setResult(null);
 
     try {
-      const result = await trackBusPack({
-        letra: data.letra,
-        boca: data.boca,
-        numero: data.numero,
-      });
+      const result = await trackBusPackWithCache(
+        data.letra,
+        data.boca,
+        data.numero
+      );
 
       setResult(result);
     } catch (error) {
