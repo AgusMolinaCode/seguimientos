@@ -31,7 +31,7 @@ const carrierLogos: Record<HistoryEntry["carrier"], string> = {
   "buspack": "/buspack.png",
   "oca": "/logo-oca.jpg",
   "andreani": "/andreani.svg",
-  "correo-argentino": "/correo-argentino.png",
+  "correo-argentino": "/correoArg.png",
 };
 
 // Format timestamp to readable date

@@ -5,6 +5,24 @@ import { RecentTracking } from "@/components/RecentTracking";
 
 const companies = [
   {
+    id: "oca",
+    name: "OCA",
+    logo: "/logo-oca.jpg",
+    href: "/oca",
+  },
+  {
+    id: "correo-argentino",
+    name: "MercadoLibre",
+    logo: "/correoArg.png",
+    href: "/correo-argentino",
+  },
+  {
+    id: "andreani",
+    name: "Andreani",
+    logo: "/andreani.svg",
+    href: "/andreani",
+  },
+  {
     id: "via-cargo",
     name: "Via Cargo",
     logo: "/viacargo.svg",
@@ -15,24 +33,6 @@ const companies = [
     name: "BusPack",
     logo: "/buspack.png",
     href: "/buspack",
-  },
-  {
-    id: "andreani",
-    name: "Andreani",
-    logo: "/andreani.svg",
-    href: "/andreani",
-  },
-  {
-    id: "oca",
-    name: "OCA",
-    logo: "/logo-oca.jpg",
-    href: "/oca",
-  },
-  {
-    id: "correo-argentino",
-    name: "Correo Argentino",
-    logo: "/correo-argentino.png",
-    href: "/correo-argentino",
   },
 ];
 
