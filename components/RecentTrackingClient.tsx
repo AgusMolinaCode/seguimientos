@@ -58,7 +58,7 @@ function formatTimestamp(timestamp: number): string {
 // Check if shipment is delivered
 function isDelivered(status: string): boolean {
   const lowerStatus = status.toLowerCase();
-  return lowerStatus.includes("entregado") || lowerStatus.includes("entregada");
+  return lowerStatus.includes("entregado") || lowerStatus.includes("entregada") || lowerStatus.includes("entrega en sucursal");
 }
 
 type FilterType = "all" | "delivered" | "in-transit";

@@ -3,28 +3,13 @@
 import type { ScraperResult, TrackingInfo } from "../types";
 
 /**
- * Interface para la respuesta de Correo Argentino
+ * Interface para los eventos parseados de Correo Argentino
  */
 interface CorreoArgentinoEvent {
-  fecha?: string;
-  hora?: string;
-  estado?: string;
-  subestado?: string;
-  oficina?: string;
-  localidad?: string;
-  provincia?: string;
-  comentarios?: string;
-}
-
-interface CorreoArgentinoResponse {
-  error?: boolean;
-  mensaje?: string;
-  resultado?: {
-    eventos?: CorreoArgentinoEvent[];
-    numero?: string;
-    estadoActual?: string;
-    [key: string]: any;
-  };
+  fecha: string;
+  planta: string;
+  historia: string;
+  estado: string;
 }
 
 /**
@@ -54,19 +39,19 @@ export async function scrapeCorreoArgentino(
       throw new Error(`API Correo Argentino error: ${response.status} ${response.statusText}`);
     }
 
-    // Obtener la respuesta JSON
-    const data: CorreoArgentinoResponse = await response.json();
+    // Obtener la respuesta HTML
+    const htmlText = await response.text();
 
-    // Verificar si hay error en la respuesta
-    if (data.error || !data.resultado) {
+    // Verificar si el tracking no fue encontrado
+    if (htmlText.includes("No se encontraron resultados") || htmlText.includes("no encontrada") || htmlText.length < 200) {
       return {
         success: false,
-        error: data.mensaje || "No se encontró información para este número de tracking. Verifica que sea correcto.",
+        error: "No se encontró información para este número de tracking. Verifica que sea correcto.",
       };
     }
 
-    const resultado = data.resultado;
-    const eventos = resultado.eventos || [];
+    // Parsear la tabla HTML
+    const eventos = parseCorreoArgentinoHTML(htmlText);
 
     if (eventos.length === 0) {
       return {
@@ -77,36 +62,21 @@ export async function scrapeCorreoArgentino(
 
     // El primer evento es el más reciente
     const latestEvent = eventos[0];
-    const currentStatus = latestEvent.estado || "Desconocido";
+    const currentStatus = latestEvent.estado || latestEvent.historia || "Desconocido";
 
     // Obtener origen y destino
     const firstEvent = eventos[eventos.length - 1]; // Primer evento (origen)
-    const origin = firstEvent.localidad && firstEvent.provincia
-      ? `${firstEvent.localidad}, ${firstEvent.provincia}`
-      : firstEvent.localidad || firstEvent.provincia || "N/A";
-
-    const destination = latestEvent.localidad && latestEvent.provincia
-      ? `${latestEvent.localidad}, ${latestEvent.provincia}`
-      : latestEvent.localidad || latestEvent.provincia || "N/A";
+    const origin = firstEvent.planta || "N/A";
+    const destination = latestEvent.planta || "N/A";
 
     // Construir timeline
     const timeline = eventos.map((event) => {
-      const fecha = event.fecha || "";
-      const hora = event.hora || "";
-      const datetime = fecha && hora ? `${fecha} ${hora}` : fecha || hora || "N/A";
+      const datetime = event.fecha || "N/A";
+      const location = event.planta || "N/A";
 
-      const location = [
-        event.oficina,
-        event.localidad,
-        event.provincia
-      ].filter(Boolean).join(", ") || "N/A";
-
-      let status = event.estado || "Sin información";
-      if (event.subestado) {
-        status += ` - ${event.subestado}`;
-      }
-      if (event.comentarios) {
-        status += ` (${event.comentarios})`;
+      let status = event.historia || "Sin información";
+      if (event.estado && event.estado.trim() !== "") {
+        status += ` - ${event.estado}`;
       }
 
       return {
@@ -117,20 +87,12 @@ export async function scrapeCorreoArgentino(
     });
 
     // Construir mensaje de estado firmado
-    const lastEventDate = latestEvent.fecha && latestEvent.hora
-      ? `${latestEvent.fecha} ${latestEvent.hora}`
-      : latestEvent.fecha || "";
-
-    const lastLocation = [latestEvent.oficina, latestEvent.localidad]
-      .filter(Boolean)
-      .join(" - ");
-
     let signedByMessage = currentStatus;
-    if (lastEventDate) {
-      signedByMessage += ` - ${lastEventDate}`;
+    if (latestEvent.fecha) {
+      signedByMessage += ` - ${latestEvent.fecha}`;
     }
-    if (lastLocation) {
-      signedByMessage += ` - ${lastLocation}`;
+    if (latestEvent.planta) {
+      signedByMessage += ` - ${latestEvent.planta}`;
     }
 
     // Construir objeto TrackingInfo
@@ -145,7 +107,9 @@ export async function scrapeCorreoArgentino(
       service: "Correo Argentino",
       carrier: "Correo Argentino",
       timeline,
-      incidents: latestEvent.comentarios || "",
+      incidents: latestEvent.estado && latestEvent.estado !== currentStatus
+        ? latestEvent.estado
+        : "",
     };
 
     return {
@@ -161,5 +125,57 @@ export async function scrapeCorreoArgentino(
           ? `Error al obtener información: ${error.message}`
           : "Error desconocido al procesar la solicitud de Correo Argentino",
     };
+  }
+}
+
+/**
+ * Parser de HTML para extraer los eventos de la tabla
+ * @param htmlText - Texto HTML de la respuesta de Correo Argentino
+ * @returns Array de eventos parseados
+ */
+function parseCorreoArgentinoHTML(htmlText: string): CorreoArgentinoEvent[] {
+  const eventos: CorreoArgentinoEvent[] = [];
+
+  try {
+    // El HTML de Correo Argentino tiene <tr> sin cerrar, así que buscamos desde <tr> hasta el siguiente <tr> o </tbody>
+    // Primero, extraemos la sección tbody
+    const tbodyMatch = htmlText.match(/<tbody>([\s\S]*?)<\/tbody>/i);
+    if (!tbodyMatch) {
+      console.error("No se encontró <tbody> en la respuesta");
+      return [];
+    }
+
+    const tbodyContent = tbodyMatch[1];
+
+    // Dividir por <tr> para obtener las filas
+    const rows = tbodyContent.split(/<tr>/i).filter(r => r.trim().length > 0);
+
+    for (const row of rows) {
+      // Buscar todas las celdas <td> en esta fila
+      const cellRegex = /<td[^>]*>(.*?)<\/td>/gi;
+      const cells = [];
+      let match;
+
+      while ((match = cellRegex.exec(row)) !== null) {
+        // Limpiar el contenido de la celda (eliminar HTML interno si hay)
+        const content = match[1].replace(/<[^>]+>/g, '').trim();
+        cells.push(content);
+      }
+
+      // Si tenemos 4 celdas, es una fila válida (Fecha, Planta, Historia, Estado)
+      if (cells.length >= 4) {
+        eventos.push({
+          fecha: cells[0],
+          planta: cells[1],
+          historia: cells[2],
+          estado: cells[3],
+        });
+      }
+    }
+
+    return eventos;
+  } catch (error) {
+    console.error("Error parseando HTML de Correo Argentino:", error);
+    return [];
   }
 }

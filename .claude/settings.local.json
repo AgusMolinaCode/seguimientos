@@ -16,7 +16,10 @@
       "Bash(npm uninstall:*)",
       "mcp__playwright__browser_fill_form",
       "Bash(node -e:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(npm run dev:*)",
+      "mcp__playwright__browser_console_messages"
     ],
     "deny": [],
     "ask": []
