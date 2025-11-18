@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { trackViaCargoWithCache } from "@/actions/cached-track";
 import { ViaCargoForm } from "@/components/tracking";
@@ -9,7 +9,7 @@ import { LoadingSteps } from "@/components/ui/LoadingSteps";
 import type { ViaCargoFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
-export default function ViaCargoPage() {
+function ViaCargoContent() {
   const searchParams = useSearchParams();
   const initialTracking = searchParams.get("tracking") || "";
 
@@ -54,5 +54,13 @@ export default function ViaCargoPage() {
 
       {result && !loading && <TrackingResult result={result} />}
     </div>
+  );
+}
+
+export default function ViaCargoPage() {
+  return (
+    <Suspense fallback={<div className="max-w-[90rem] mx-auto mt-12 px-4">Cargando...</div>}>
+      <ViaCargoContent />
+    </Suspense>
   );
 }

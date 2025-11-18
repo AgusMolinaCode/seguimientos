@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { trackOCAWithCache } from "@/actions/cached-track";
 import { OCAForm } from "@/components/tracking/OCAForm";
@@ -9,7 +9,7 @@ import { LoadingSteps } from "@/components/ui/LoadingSteps";
 import type { OCAFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
-export default function OCAPage() {
+function OCAContent() {
   const searchParams = useSearchParams();
   const initialTracking = searchParams.get("tracking") || "";
 
@@ -54,5 +54,13 @@ export default function OCAPage() {
 
       {result && !loading && <TrackingResult result={result} />}
     </div>
+  );
+}
+
+export default function OCAPage() {
+  return (
+    <Suspense fallback={<div className="max-w-[90rem] mx-auto mt-12 px-4">Cargando...</div>}>
+      <OCAContent />
+    </Suspense>
   );
 }

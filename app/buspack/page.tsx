@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { trackBusPackWithCache } from "@/actions/cached-track";
 import { BusPackForm } from "@/components/tracking";
@@ -9,7 +9,7 @@ import { LoadingSteps } from "@/components/ui/LoadingSteps";
 import type { BusPackFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
-export default function BusPackPage() {
+function BusPackContent() {
   const searchParams = useSearchParams();
   const initialTracking = searchParams.get("tracking") || "";
 
@@ -58,5 +58,13 @@ export default function BusPackPage() {
 
       {result && !loading && <TrackingResult result={result} />}
     </div>
+  );
+}
+
+export default function BusPackPage() {
+  return (
+    <Suspense fallback={<div className="max-w-[90rem] mx-auto my-12 px-4">Cargando...</div>}>
+      <BusPackContent />
+    </Suspense>
   );
 }
