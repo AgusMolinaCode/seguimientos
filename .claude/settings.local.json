@@ -19,7 +19,8 @@
       "Bash(npm run build:*)",
       "Bash(curl:*)",
       "Bash(npm run dev:*)",
-      "mcp__playwright__browser_console_messages"
+      "mcp__playwright__browser_console_messages",
+      "mcp__sequential-thinking__sequentialthinking"
     ],
     "deny": [],
     "ask": []

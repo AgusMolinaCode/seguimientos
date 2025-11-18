@@ -3,7 +3,7 @@
     "id": "correo-argentino-HC261084027AR",
     "carrier": "correo-argentino",
     "trackingNumber": "HC261084027AR",
-    "timestamp": 1763388648517,
+    "timestamp": 1763468065371,
     "lastStatus": "ENTREGADO",
     "data": {
       "trackingNumber": "HC261084027AR",
@@ -170,7 +170,7 @@
     "id": "buspack-r-3101-10345",
     "carrier": "buspack",
     "trackingNumber": "r-3101-10345",
-    "timestamp": 1763412156511,
+    "timestamp": 1763466439651,
     "lastStatus": "En camino",
     "data": {
       "trackingNumber": "R-3101-10345",
@@ -195,7 +195,7 @@
       ],
       "incidents": "No hay incidencias.",
       "currentStatus": "En camino",
-      "deliveryDate": "2025-11-17 14:21:06",
+      "deliveryDate": "2025-11-17 21:22:36",
       "pieceNumbers": "1921135-25",
       "documentType": ""
     }
@@ -260,7 +260,7 @@
     "id": "oca-5079800000002536631",
     "carrier": "oca",
     "trackingNumber": "5079800000002536631",
-    "timestamp": 1763349129591,
+    "timestamp": 1763468093641,
     "lastStatus": "Entregado - Suc: USHUAIA",
     "data": {
       "trackingNumber": "5079800000002536631",
@@ -331,7 +331,7 @@
     "id": "andreani-360002795641820",
     "carrier": "andreani",
     "trackingNumber": "360002795641820",
-    "timestamp": 1763412177898,
+    "timestamp": 1763466451547,
     "lastStatus": "En camino",
     "data": {
       "trackingNumber": "360002795641820",
