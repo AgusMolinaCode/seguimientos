@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Package, Clock, MapPin, PackageCheck, ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -14,6 +14,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import type { HistoryEntry } from "@/lib/history/tracking-history";
 
 // Carrier name mapping
@@ -61,6 +70,9 @@ function isDelivered(status: string): boolean {
   return lowerStatus.includes("entregado") || lowerStatus.includes("entregada") || lowerStatus.includes("entrega en sucursal");
 }
 
+// Pagination constant
+const ITEMS_PER_PAGE = 6;
+
 type FilterType = "all" | "delivered" | "in-transit";
 
 interface RecentTrackingClientProps {
@@ -69,6 +81,7 @@ interface RecentTrackingClientProps {
 
 export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
   const [filter, setFilter] = useState<FilterType>("all");
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Filter entries based on selected filter
   const filteredEntries = entries.filter((entry) => {
@@ -81,6 +94,17 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
 
     return true;
   });
+
+  // Reset to page 1 when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredEntries.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedEntries = filteredEntries.slice(startIndex, endIndex);
 
   return (
     <div className="w-full max-w-7xl mt-12">
@@ -159,8 +183,9 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
 
       {/* Cards grid */}
       {filteredEntries.length > 0 && (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 px-2">
-          {filteredEntries.map((entry) => {
+        <>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 px-2">
+            {paginatedEntries.map((entry) => {
             const delivered = isDelivered(entry.data.currentStatus || entry.lastStatus);
 
             return (
@@ -251,7 +276,66 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
               </div>
             );
           })}
-        </div>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+
+                  {/* Page numbers */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // Show first page, last page, current page, and adjacent pages
+                    const showPage =
+                      page === 1 ||
+                      page === totalPages ||
+                      Math.abs(page - currentPage) <= 1;
+
+                    // Show ellipsis if there's a gap
+                    const showEllipsisBefore = page === currentPage - 2 && currentPage > 3;
+                    const showEllipsisAfter = page === currentPage + 2 && currentPage < totalPages - 2;
+
+                    if (showEllipsisBefore || showEllipsisAfter) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+
+                    if (!showPage) return null;
+
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

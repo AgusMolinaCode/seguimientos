@@ -76,72 +76,6 @@
     }
   },
   {
-    "id": "correo-argentino-HC261441832AR",
-    "carrier": "correo-argentino",
-    "trackingNumber": "HC261441832AR",
-    "timestamp": 1763388633158,
-    "lastStatus": "ENTREGA EN SUCURSAL",
-    "data": {
-      "trackingNumber": "HC261441832AR",
-      "currentStatus": "ENTREGA EN SUCURSAL",
-      "origin": "CORREO ARGENTINO",
-      "destination": "VIALE",
-      "pieces": "N/A",
-      "weight": "N/A",
-      "signedBy": "ENTREGA EN SUCURSAL - 19-09-2025 10:44 - VIALE",
-      "service": "Correo Argentino",
-      "carrier": "Correo Argentino",
-      "timeline": [
-        {
-          "datetime": "19-09-2025 10:44",
-          "location": "VIALE",
-          "status": "INTENTO DE ENTREGA - ENTREGA EN SUCURSAL"
-        },
-        {
-          "datetime": "18-09-2025 09:35",
-          "location": "VIALE",
-          "status": "INTENTO DE ENTREGA - EN ESPERA EN SUCURSAL"
-        },
-        {
-          "datetime": "17-09-2025 20:00",
-          "location": "CLOG PARANA",
-          "status": "EN PROCESO DE CLASIFICACIÓN"
-        },
-        {
-          "datetime": "17-09-2025 14:14",
-          "location": "CLOG PARANA",
-          "status": "LLEGADA AL CENTRO DE PROCESAMIENTO"
-        },
-        {
-          "datetime": "17-09-2025 01:01",
-          "location": "CTP BUENOS AIRES",
-          "status": "EN PROCESO DE CLASIFICACIÓN"
-        },
-        {
-          "datetime": "15-09-2025 17:47",
-          "location": "UP 8 PILAR",
-          "status": "EN PROCESO DE CLASIFICACIÓN"
-        },
-        {
-          "datetime": "15-09-2025 17:40",
-          "location": "UP 8 PILAR",
-          "status": "INGRESO AL CORREO"
-        },
-        {
-          "datetime": "15-09-2025 17:40",
-          "location": "UP 8 PILAR",
-          "status": "REPESAJE"
-        },
-        {
-          "datetime": "13-09-2025 12:45",
-          "location": "CORREO ARGENTINO",
-          "status": "PREIMPOSICION"
-        }
-      ],
-      "incidents": ""
-    }
-  },
-  {
     "id": "correo-argentino-HC261803236AR",
     "carrier": "correo-argentino",
     "trackingNumber": "HC261803236AR",
@@ -236,7 +170,7 @@
     "id": "buspack-r-3101-10345",
     "carrier": "buspack",
     "trackingNumber": "r-3101-10345",
-    "timestamp": 1763381809034,
+    "timestamp": 1763412156511,
     "lastStatus": "En camino",
     "data": {
       "trackingNumber": "R-3101-10345",
@@ -261,7 +195,7 @@
       ],
       "incidents": "No hay incidencias.",
       "currentStatus": "En camino",
-      "deliveryDate": "2025-11-14 19:17:50",
+      "deliveryDate": "2025-11-17 14:21:06",
       "pieceNumbers": "1921135-25",
       "documentType": ""
     }
@@ -397,7 +331,7 @@
     "id": "andreani-360002795641820",
     "carrier": "andreani",
     "trackingNumber": "360002795641820",
-    "timestamp": 1763380923948,
+    "timestamp": 1763412177898,
     "lastStatus": "En camino",
     "data": {
       "trackingNumber": "360002795641820",
