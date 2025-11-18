@@ -20,7 +20,9 @@
       "Bash(curl:*)",
       "Bash(npm run dev:*)",
       "mcp__playwright__browser_console_messages",
-      "mcp__sequential-thinking__sequentialthinking"
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,7 +1,7 @@
 "use server";
 
-import puppeteer from "puppeteer";
 import type { ScraperResult, TrackingInfo, TimelineEvent } from "../types";
+import { launchBrowser, BROWSER_TIMEOUTS } from "@/lib/browser/puppeteer-config";
 
 export async function scrapeAndreani(
   trackingNumber: string
@@ -11,17 +11,17 @@ export async function scrapeAndreani(
   try {
     const url = `https://www.andreani.com/envio/${trackingNumber}`;
 
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    browser = await launchBrowser();
 
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
+    await page.goto(url, {
+      waitUntil: "networkidle0",
+      timeout: BROWSER_TIMEOUTS.navigation
+    });
 
     // Wait for the tracking state element to ensure page has loaded
     await page.waitForSelector('[data-testid="tracking-state"]', {
-      timeout: 15000,
+      timeout: BROWSER_TIMEOUTS.wait,
     });
 
     // Extract tracking data

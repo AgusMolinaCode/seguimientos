@@ -170,12 +170,12 @@
     "id": "buspack-r-3101-10345",
     "carrier": "buspack",
     "trackingNumber": "r-3101-10345",
-    "timestamp": 1763466439651,
-    "lastStatus": "En camino",
+    "timestamp": 1763496652252,
+    "lastStatus": "Entregado",
     "data": {
       "trackingNumber": "R-3101-10345",
       "origin": "",
-      "destination": "",
+      "destination": "ARROYITO (CBA)",
       "pieces": "1",
       "weight": "No especificado",
       "signedBy": "",
@@ -191,11 +191,21 @@
           "location": "",
           "datetime": "14/11/2025 10:21",
           "status": "En camino"
+        },
+        {
+          "location": "",
+          "datetime": "18/11/2025 16:06",
+          "status": "En Agencia Destino"
+        },
+        {
+          "location": "",
+          "datetime": "18/11/2025 16:56",
+          "status": "Entregado"
         }
       ],
       "incidents": "No hay incidencias.",
-      "currentStatus": "En camino",
-      "deliveryDate": "2025-11-17 21:22:36",
+      "currentStatus": "Entregado",
+      "deliveryDate": "2025-11-18 16:56:23",
       "pieceNumbers": "1921135-25",
       "documentType": ""
     }

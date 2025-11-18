@@ -1,6 +1,6 @@
-import puppeteer from "puppeteer";
 import type { ScraperResult, TimelineEvent } from "../types";
 import type { BusPackParams } from "./types";
+import { launchBrowser, BROWSER_TIMEOUTS } from "@/lib/browser/puppeteer-config";
 
 const baseUrl = "https://netsolutions.empresar-sys.com.ar:27576/apps/gspclientes/";
 
@@ -10,20 +10,20 @@ export async function scrapeBusPack(
   let browser;
 
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    browser = await launchBrowser();
 
     const page = await browser.newPage();
 
     // Construir URL con parámetros dinámicos
     const url = `${baseUrl}?idEmp=&Letra=${params.letra}&Boca=${params.boca}&Numero=${params.numero}`;
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto(url, {
+      waitUntil: "networkidle2",
+      timeout: BROWSER_TIMEOUTS.navigation
+    });
 
 
-    await page.waitForSelector("#respuesta", { timeout: 15000 });
+    await page.waitForSelector("#respuesta", { timeout: BROWSER_TIMEOUTS.wait });
 
     // Esperar un poco más para asegurar que todo cargó
     await new Promise((resolve) => setTimeout(resolve, 1000));

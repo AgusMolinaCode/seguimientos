@@ -1,5 +1,5 @@
-import puppeteer from "puppeteer";
 import type { ScraperResult, TimelineEvent } from "../types";
+import { launchBrowser, BROWSER_TIMEOUTS } from "@/lib/browser/puppeteer-config";
 
 export async function scrapeViaCargo(
   trackingNumber: string
@@ -7,18 +7,18 @@ export async function scrapeViaCargo(
   let browser;
 
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    browser = await launchBrowser();
 
     const page = await browser.newPage();
     const url = `https://viacargo.com.ar/seguimiento-de-envio/${trackingNumber}/`;
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto(url, {
+      waitUntil: "networkidle2",
+      timeout: BROWSER_TIMEOUTS.navigation
+    });
 
     // Esperar que el iframe cargue
-    await page.waitForSelector("iframe", { timeout: 15000 });
+    await page.waitForSelector("iframe", { timeout: BROWSER_TIMEOUTS.wait });
 
     // Esperar que el contenido dentro del iframe cargue
     await new Promise((resolve) => setTimeout(resolve, 3000));
