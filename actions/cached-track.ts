@@ -7,93 +7,56 @@ import {
   getCachedAndreaniData,
   getCachedCorreoArgentinoData,
 } from "@/lib/cache/cached-tracking";
-import { addToHistory } from "@/lib/history/tracking-history";
 import type { ScraperResult } from "./types";
 
 /**
- * Track Via Cargo shipment with caching and history
+ * Track Via Cargo shipment with caching
+ * History is handled client-side via localStorage
  */
 export async function trackViaCargoWithCache(
   trackingNumber: string
 ): Promise<ScraperResult> {
-  // Get cached result
-  const result = await getCachedViaCargoData(trackingNumber);
-
-  // If successful, add to history
-  if (result.success && result.data) {
-    await addToHistory("via-cargo", trackingNumber, result.data);
-  }
-
-  return result;
+  return await getCachedViaCargoData(trackingNumber);
 }
 
 /**
- * Track BusPack shipment with caching and history
+ * Track BusPack shipment with caching
+ * History is handled client-side via localStorage
  */
 export async function trackBusPackWithCache(
   letra: string,
   boca: string,
   numero: string
 ): Promise<ScraperResult> {
-  // Get cached result
-  const result = await getCachedBusPackData(letra, boca, numero);
-
-  // If successful, add to history
-  if (result.success && result.data) {
-    const trackingNumber = `${letra}-${boca}-${numero}`;
-    await addToHistory("buspack", trackingNumber, result.data);
-  }
-
-  return result;
+  return await getCachedBusPackData(letra, boca, numero);
 }
 
 /**
- * Track OCA shipment with caching and history
+ * Track OCA shipment with caching
+ * History is handled client-side via localStorage
  */
 export async function trackOCAWithCache(
   trackingNumber: string
 ): Promise<ScraperResult> {
-  // Get cached result
-  const result = await getCachedOCAData(trackingNumber);
-
-  // If successful, add to history
-  if (result.success && result.data) {
-    await addToHistory("oca", trackingNumber, result.data);
-  }
-
-  return result;
+  return await getCachedOCAData(trackingNumber);
 }
 
 /**
- * Track Andreani shipment with caching and history
+ * Track Andreani shipment with caching
+ * History is handled client-side via localStorage
  */
 export async function trackAndreaniWithCache(
   trackingNumber: string
 ): Promise<ScraperResult> {
-  // Get cached result
-  const result = await getCachedAndreaniData(trackingNumber);
-
-  // If successful, add to history
-  if (result.success && result.data) {
-    await addToHistory("andreani", trackingNumber, result.data);
-  }
-
-  return result;
+  return await getCachedAndreaniData(trackingNumber);
 }
 
 /**
- * Track Correo Argentino shipment with caching and history
+ * Track Correo Argentino shipment with caching
+ * History is handled client-side via localStorage
  */
 export async function trackCorreoArgentinoWithCache(
   trackingNumber: string
 ): Promise<ScraperResult> {
-  // Get cached result
-  const result = await getCachedCorreoArgentinoData(trackingNumber);
-
-  // If successful, add to history
-  if (result.success && result.data) {
-    await addToHistory("correo-argentino", trackingNumber, result.data);
-  }
-
-  return result;
+  return await getCachedCorreoArgentinoData(trackingNumber);
 }
