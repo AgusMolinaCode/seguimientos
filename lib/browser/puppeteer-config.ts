@@ -6,34 +6,28 @@ function isVercelEnvironment(): boolean {
 }
 
 /**
+ * URL del binario remoto de Chromium para Vercel
+ * Usar chromium-min con binario remoto evita problemas de bibliotecas compartidas
+ */
+const CHROMIUM_REMOTE_EXECUTABLE =
+  "https://github.com/Sparticuz/chromium/releases/download/v138.0.0/chromium-v138.0.0-pack.tar";
+
+/**
  * Lanza el browser con la configuración correcta según el entorno
  * - Local: usa puppeteer con Chrome local
- * - Vercel: usa @sparticuz/chromium para serverless
+ * - Vercel: usa puppeteer-core con chromium-min y binario remoto
  */
 export async function launchBrowser() {
   const isVercel = isVercelEnvironment();
 
   if (isVercel) {
-    // Configuración para Vercel (serverless)
+    // Configuración para Vercel (serverless) usando chromium-min con binario remoto
     const puppeteerCore = await import("puppeteer-core");
-    const chromium = await import("@sparticuz/chromium");
-
-    // Configuración específica para evitar problemas con bibliotecas compartidas
-    const executablePath = await chromium.default.executablePath();
+    const chromium = await import("@sparticuz/chromium-min");
 
     return puppeteerCore.default.launch({
-      args: [
-        ...chromium.default.args,
-        '--disable-gpu',
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-software-rasterizer',
-        '--disable-features=IsolateOrigins',
-        '--disable-site-isolation-trials',
-        '--single-process', // Crítico para Vercel serverless
-      ],
-      executablePath,
+      args: chromium.default.args,
+      executablePath: await chromium.default.executablePath(CHROMIUM_REMOTE_EXECUTABLE),
       headless: true,
     });
   } else {
