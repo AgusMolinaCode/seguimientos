@@ -1,4 +1,4 @@
-import puppeteer, { type Browser } from "puppeteer";
+import type { Browser } from "puppeteer-core";
 
 /**
  * Detecta si está corriendo en Vercel (producción serverless)
@@ -9,7 +9,7 @@ function isVercelEnvironment(): boolean {
 
 /**
  * Lanza el browser con la configuración correcta según el entorno
- * - Local: usa puppeteer normal
+ * - Local: usa puppeteer-core con Chrome local
  * - Vercel: usa @sparticuz/chromium para serverless
  */
 export async function launchBrowser(): Promise<Browser> {
@@ -17,16 +17,19 @@ export async function launchBrowser(): Promise<Browser> {
 
   if (isVercel) {
     // Configuración para Vercel (serverless)
+    const puppeteerCore = await import("puppeteer-core");
     const chromium = await import("@sparticuz/chromium");
 
-    return puppeteer.launch({
-      args: [...chromium.default.args, '--no-sandbox', '--disable-setuid-sandbox'],
+    return puppeteerCore.default.launch({
+      args: chromium.default.args,
       executablePath: await chromium.default.executablePath(),
       headless: true,
     });
   } else {
     // Configuración para desarrollo local
-    return puppeteer.launch({
+    const puppeteer = await import("puppeteer");
+
+    return puppeteer.default.launch({
       headless: true,
       args: [
         "--no-sandbox",

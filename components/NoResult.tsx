@@ -19,7 +19,6 @@ const NoResult = ({ result }: TrackingResultProps) => {
           <ul className="list-disc list-inside space-y-1">
             <li>El número de envío sea correcto</li>
             <li>No tenga espacios ni caracteres especiales</li>
-            <li>El envío esté registrado en Via Cargo</li>
           </ul>
         </div>
       </div>
