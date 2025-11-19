@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "app/**/*.tsx": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  },
+  "buildCommand": "npm run build"
+}

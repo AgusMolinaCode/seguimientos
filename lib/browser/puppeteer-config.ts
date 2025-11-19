@@ -18,10 +18,23 @@ export async function launchBrowser() {
     const puppeteerCore = await import("puppeteer-core");
     const chromium = await import("@sparticuz/chromium");
 
+    // Configuración específica para evitar problemas con bibliotecas compartidas
+    const executablePath = await chromium.default.executablePath();
+
     return puppeteerCore.default.launch({
-      args: [...chromium.default.args, '--disable-gpu'],
-      executablePath: await chromium.default.executablePath(),
-      headless: chromium.default.headless,
+      args: [
+        ...chromium.default.args,
+        '--disable-gpu',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-software-rasterizer',
+        '--disable-features=IsolateOrigins',
+        '--disable-site-isolation-trials',
+        '--single-process', // Crítico para Vercel serverless
+      ],
+      executablePath,
+      headless: true,
     });
   } else {
     // Configuración para desarrollo local
