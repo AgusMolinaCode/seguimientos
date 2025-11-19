@@ -14,7 +14,8 @@
       "mcp__puppeteer__puppeteer_connect_active_tab",
       "mcp__playwright__browser_install",
       "mcp__playwright__browser_navigate",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []

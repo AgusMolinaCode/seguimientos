@@ -8,48 +8,37 @@ function isVercelEnvironment(): boolean {
 /**
  * Lanza el browser con la configuración correcta según el entorno
  * - Local: usa puppeteer-extra con stealth plugin
- * - Vercel: usa puppeteer-core con chromium-min y stealth
+ * - Vercel: usa puppeteer-core sin plugins para evitar problemas de bundling
  */
 export async function launchBrowser() {
   const isVercel = isVercelEnvironment();
 
   if (isVercel) {
-    // Configuración para Vercel (serverless) usando @sparticuz/chromium-min con binario embebido
+    // Configuración para Vercel (serverless) - SIN puppeteer-extra para evitar errores de bundling
     const puppeteerCore = await import("puppeteer-core");
-    const puppeteerExtra = await import("puppeteer-extra");
-    const StealthPlugin = await import("puppeteer-extra-plugin-stealth");
     const chromium = await import("@sparticuz/chromium-min");
 
     console.log("[Puppeteer] Environment: Vercel serverless");
-    console.log("[Puppeteer] Using @sparticuz/chromium-min with stealth mode");
-
-    // Configurar puppeteer-extra con stealth
-    puppeteerExtra.default.use(StealthPlugin.default());
+    console.log("[Puppeteer] Using @sparticuz/chromium-min (puppeteer-core only)");
 
     try {
       const execPath = await chromium.default.executablePath();
       console.log("[Puppeteer] ✅ Chromium executable path:", execPath);
 
-      const browser = await puppeteerExtra.default.launch({
+      const browser = await puppeteerCore.default.launch({
         args: [
           ...chromium.default.args,
+          // Anti-detección básica sin stealth plugin
           "--disable-blink-features=AutomationControlled",
           "--disable-features=IsolateOrigins,site-per-process",
+          "--disable-web-security",
+          "--disable-features=VizDisplayCompositor",
         ],
         executablePath: execPath,
         headless: true,
       });
 
-      // Configurar user agent realista en cada página nueva
-      browser.on("targetcreated", async (target) => {
-        const page = await target.page();
-        if (page) {
-          await page.setUserAgent(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-          );
-        }
-      });
-
+      console.log("[Puppeteer] ✅ Browser launched successfully in Vercel");
       return browser;
     } catch (error) {
       console.error("[Puppeteer] ❌ Failed to launch browser:", error);
