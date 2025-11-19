@@ -25,14 +25,17 @@ export async function scrapeCorreoArgentino(
     const apiUrl = "https://www.correoargentino.com.ar/sites/all/modules/custom/ca_forms/api/wsFacade.php";
 
     // Crear FormData con los parámetros requeridos
-    const formData = new FormData();
+    const formData = new URLSearchParams();
     formData.append("action", "mercadolibre");
     formData.append("id", trackingNumber);
 
     // Hacer petición POST a la API
     const response = await fetch(apiUrl, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: formData.toString(),
     });
 
     if (!response.ok) {
@@ -42,8 +45,15 @@ export async function scrapeCorreoArgentino(
     // Obtener la respuesta HTML
     const htmlText = await response.text();
 
+    // Log para debugging en desarrollo
+    if (process.env.NODE_ENV === "development") {
+      console.log("Correo Argentino API response length:", htmlText.length);
+      console.log("Response preview:", htmlText.substring(0, 200));
+    }
+
     // Verificar si el tracking no fue encontrado
     if (htmlText.includes("No se encontraron resultados") || htmlText.includes("no encontrada") || htmlText.length < 200) {
+      console.error("Correo Argentino: No se encontró tracking o respuesta vacía");
       return {
         success: false,
         error: "No se encontró información para este número de tracking. Verifica que sea correcto.",
@@ -54,9 +64,10 @@ export async function scrapeCorreoArgentino(
     const eventos = parseCorreoArgentinoHTML(htmlText);
 
     if (eventos.length === 0) {
+      console.error("Correo Argentino: No se pudieron parsear eventos de la respuesta");
       return {
         success: false,
-        error: "No hay eventos de seguimiento disponibles para este envío.",
+        error: "No se pudieron procesar los datos de seguimiento. Por favor, intenta nuevamente.",
       };
     }
 
@@ -141,7 +152,10 @@ function parseCorreoArgentinoHTML(htmlText: string): CorreoArgentinoEvent[] {
     // Primero, extraemos la sección tbody
     const tbodyMatch = htmlText.match(/<tbody>([\s\S]*?)<\/tbody>/i);
     if (!tbodyMatch) {
-      console.error("No se encontró <tbody> en la respuesta");
+      console.error("Correo Argentino Parser: No se encontró <tbody> en la respuesta HTML");
+      if (process.env.NODE_ENV === "development") {
+        console.log("HTML received:", htmlText.substring(0, 500));
+      }
       return [];
     }
 
