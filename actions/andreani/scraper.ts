@@ -9,9 +9,13 @@ export async function scrapeAndreani(
   let browser;
 
   try {
+    console.log("[Andreani] Starting scraper for:", trackingNumber);
     const url = `https://www.andreani.com/envio/${trackingNumber}`;
+    console.log("[Andreani] Target URL:", url);
 
+    console.log("[Andreani] Launching browser...");
     browser = await launchBrowser();
+    console.log("[Andreani] ✅ Browser launched successfully");
 
     const page = await browser.newPage();
     await page.goto(url, {
