@@ -1,14 +1,56 @@
-import { getRecentHistory } from "@/lib/history/tracking-history";
+"use client";
+
+import { useState, useEffect } from "react";
+import { getRecentHistory } from "@/lib/history/client-tracking-history";
 import { Package } from "lucide-react";
 import { RecentTrackingClient } from "@/components/RecentTrackingClient";
+import type { HistoryEntry } from "@/lib/history/client-tracking-history";
 
 /**
- * Server component wrapper that fetches tracking history
- * and passes it to the client component for filtering and rendering
+ * Client component that reads tracking history from localStorage
  */
-export async function RecentTracking() {
-  // Fetch recent history (server component - can use 'use cache')
-  const recentEntries = await getRecentHistory(8);
+export function RecentTracking() {
+  const [recentEntries, setRecentEntries] = useState<HistoryEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Read from localStorage on mount
+    const entries = getRecentHistory(8);
+    setRecentEntries(entries);
+    setIsLoading(false);
+
+    // Listen for storage changes (from other tabs or same page)
+    const handleStorageChange = () => {
+      const updatedEntries = getRecentHistory(8);
+      setRecentEntries(updatedEntries);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    // Custom event for same-page updates
+    window.addEventListener("historyUpdated", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("historyUpdated", handleStorageChange);
+    };
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-7xl mt-12">
+        <div className="bg-white rounded-xl shadow-md p-8">
+          <div className="animate-pulse">
+            <div className="h-6 bg-gray-200 rounded w-1/3 mb-6"></div>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-32 bg-gray-100 rounded-lg"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (recentEntries.length === 0) {
     return (

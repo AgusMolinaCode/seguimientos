@@ -6,6 +6,7 @@ import { trackViaCargoWithCache } from "@/actions/cached-track";
 import { ViaCargoForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
+import { addToHistory } from "@/lib/history/client-tracking-history";
 import type { ViaCargoFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
@@ -24,6 +25,12 @@ function ViaCargoContent() {
       const result = await trackViaCargoWithCache(data.trackingNumber);
 
       setResult(result);
+
+      // Save to localStorage if successful
+      if (result.success && result.data) {
+        addToHistory("via-cargo", data.trackingNumber, result.data);
+        window.dispatchEvent(new Event("historyUpdated"));
+      }
     } catch (error) {
       console.error("Error Via Cargo:", error);
       setResult({

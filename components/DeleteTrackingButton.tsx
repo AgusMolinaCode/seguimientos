@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { deleteHistoryEntry } from "@/lib/history/tracking-history";
+import { deleteHistoryEntry } from "@/lib/history/client-tracking-history";
 
 interface DeleteTrackingButtonProps {
   entryId: string;
@@ -22,14 +21,15 @@ interface DeleteTrackingButtonProps {
 export function DeleteTrackingButton({ entryId, trackingNumber }: DeleteTrackingButtonProps) {
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const router = useRouter();
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     setDeleting(true);
     try {
-      await deleteHistoryEntry(entryId);
+      deleteHistoryEntry(entryId);
       setOpen(false);
-      router.refresh();
+
+      // Trigger custom event to update UI
+      window.dispatchEvent(new Event("historyUpdated"));
     } catch (error) {
       console.error("Error deleting entry:", error);
     } finally {

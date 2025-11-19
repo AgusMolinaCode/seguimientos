@@ -6,6 +6,7 @@ import { trackCorreoArgentinoWithCache } from "@/actions/cached-track";
 import { CorreoArgentinoForm } from "@/components/tracking/CorreoArgentinoForm";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
+import { addToHistory } from "@/lib/history/client-tracking-history";
 import type { CorreoArgentinoFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
@@ -24,6 +25,12 @@ function CorreoArgentinoContent() {
       const result = await trackCorreoArgentinoWithCache(data.trackingNumber);
 
       setResult(result);
+
+      // Save to localStorage if successful
+      if (result.success && result.data) {
+        addToHistory("correo-argentino", data.trackingNumber, result.data);
+        window.dispatchEvent(new Event("historyUpdated"));
+      }
     } catch (error) {
       console.error("Error Correo Argentino:", error);
       setResult({

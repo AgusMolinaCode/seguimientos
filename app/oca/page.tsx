@@ -6,6 +6,7 @@ import { trackOCAWithCache } from "@/actions/cached-track";
 import { OCAForm } from "@/components/tracking/OCAForm";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
+import { addToHistory } from "@/lib/history/client-tracking-history";
 import type { OCAFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
@@ -22,8 +23,14 @@ function OCAContent() {
 
     try {
       const result = await trackOCAWithCache(data.trackingNumber);
-  
+
       setResult(result);
+
+      // Save to localStorage if successful
+      if (result.success && result.data) {
+        addToHistory("oca", data.trackingNumber, result.data);
+        window.dispatchEvent(new Event("historyUpdated"));
+      }
     } catch (error) {
       console.error("Error OCA:", error);
       setResult({

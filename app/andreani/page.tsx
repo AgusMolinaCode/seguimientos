@@ -6,6 +6,7 @@ import { trackAndreaniWithCache } from "@/actions/cached-track";
 import { AndreaniForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
+import { addToHistory } from "@/lib/history/client-tracking-history";
 import type { AndreaniFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
@@ -24,6 +25,12 @@ function AndreaniContent() {
       const result = await trackAndreaniWithCache(data.trackingNumber);
 
       setResult(result);
+
+      // Save to localStorage if successful
+      if (result.success && result.data) {
+        addToHistory("andreani", data.trackingNumber, result.data);
+        window.dispatchEvent(new Event("historyUpdated"));
+      }
     } catch (error) {
       console.error("Error Andreani:", error);
       setResult({

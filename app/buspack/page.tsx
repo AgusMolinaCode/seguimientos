@@ -6,6 +6,7 @@ import { trackBusPackWithCache } from "@/actions/cached-track";
 import { BusPackForm } from "@/components/tracking";
 import { TrackingResult } from "@/components/TrackingResult";
 import { LoadingSteps } from "@/components/ui/LoadingSteps";
+import { addToHistory } from "@/lib/history/client-tracking-history";
 import type { BusPackFormValues } from "@/lib/carriers/schemas";
 import type { ScraperResult } from "@/actions/types";
 
@@ -28,6 +29,14 @@ function BusPackContent() {
       );
 
       setResult(result);
+
+      // Save to localStorage if successful
+      if (result.success && result.data) {
+        const trackingId = `${data.letra}-${data.boca}-${data.numero}`;
+        addToHistory("buspack", trackingId, result.data);
+        // Trigger custom event to update UI
+        window.dispatchEvent(new Event("historyUpdated"));
+      }
     } catch (error) {
       console.error("Error BusPack:", error);
       setResult({
