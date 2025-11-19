@@ -7,8 +7,8 @@ function isVercelEnvironment(): boolean {
 
 /**
  * Lanza el browser con la configuración correcta según el entorno
- * - Local: usa puppeteer con Chrome local
- * - Vercel: usa puppeteer-core con chromium-min y binario remoto
+ * - Local: usa puppeteer-extra con stealth plugin
+ * - Vercel: usa puppeteer-core con chromium-min y stealth
  */
 export async function launchBrowser() {
   const isVercel = isVercelEnvironment();
@@ -16,29 +16,56 @@ export async function launchBrowser() {
   if (isVercel) {
     // Configuración para Vercel (serverless) usando @sparticuz/chromium-min con binario embebido
     const puppeteerCore = await import("puppeteer-core");
+    const puppeteerExtra = await import("puppeteer-extra");
+    const StealthPlugin = await import("puppeteer-extra-plugin-stealth");
     const chromium = await import("@sparticuz/chromium-min");
 
     console.log("[Puppeteer] Environment: Vercel serverless");
-    console.log("[Puppeteer] Using @sparticuz/chromium-min (embedded binary)");
+    console.log("[Puppeteer] Using @sparticuz/chromium-min with stealth mode");
+
+    // Configurar puppeteer-extra con stealth
+    puppeteerExtra.default.use(StealthPlugin.default());
 
     try {
       const execPath = await chromium.default.executablePath();
       console.log("[Puppeteer] ✅ Chromium executable path:", execPath);
 
-      return puppeteerCore.default.launch({
-        args: chromium.default.args,
+      const browser = await puppeteerExtra.default.launch({
+        args: [
+          ...chromium.default.args,
+          "--disable-blink-features=AutomationControlled",
+          "--disable-features=IsolateOrigins,site-per-process",
+        ],
         executablePath: execPath,
         headless: true,
       });
+
+      // Configurar user agent realista en cada página nueva
+      browser.on("targetcreated", async (target) => {
+        const page = await target.page();
+        if (page) {
+          await page.setUserAgent(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+          );
+        }
+      });
+
+      return browser;
     } catch (error) {
       console.error("[Puppeteer] ❌ Failed to launch browser:", error);
       throw error;
     }
   } else {
-    // Configuración para desarrollo local
-    const puppeteer = await import("puppeteer");
+    // Configuración para desarrollo local con stealth mode
+    const puppeteerExtra = await import("puppeteer-extra");
+    const StealthPlugin = await import("puppeteer-extra-plugin-stealth");
 
-    return puppeteer.default.launch({
+    console.log("[Puppeteer] Environment: Local development with stealth mode");
+
+    // Configurar puppeteer-extra con stealth
+    puppeteerExtra.default.use(StealthPlugin.default());
+
+    const browser = await puppeteerExtra.default.launch({
       headless: true,
       args: [
         "--no-sandbox",
@@ -48,8 +75,22 @@ export async function launchBrowser() {
         "--no-first-run",
         "--no-zygote",
         "--disable-gpu",
+        "--disable-blink-features=AutomationControlled",
+        "--disable-features=IsolateOrigins,site-per-process",
       ],
     });
+
+    // Configurar user agent realista en cada página nueva
+    browser.on("targetcreated", async (target) => {
+      const page = await target.page();
+      if (page) {
+        await page.setUserAgent(
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        );
+      }
+    });
+
+    return browser;
   }
 }
 

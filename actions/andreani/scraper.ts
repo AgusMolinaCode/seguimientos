@@ -18,6 +18,16 @@ export async function scrapeAndreani(
     console.log("[Andreani] ✅ Browser launched successfully");
 
     const page = await browser.newPage();
+
+    // Configurar user agent realista
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    );
+
+    // Configurar viewport realista
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    console.log("[Andreani] Navigating to:", url);
     await page.goto(url, {
       waitUntil: "networkidle0",
       timeout: BROWSER_TIMEOUTS.navigation

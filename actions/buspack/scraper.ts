@@ -10,12 +10,23 @@ export async function scrapeBusPack(
   let browser;
 
   try {
+    console.log("[BusPack] Launching browser...");
     browser = await launchBrowser();
+    console.log("[BusPack] ✅ Browser launched successfully");
 
     const page = await browser.newPage();
 
+    // Configurar user agent realista
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    );
+
+    // Configurar viewport realista
+    await page.setViewport({ width: 1920, height: 1080 });
+
     // Construir URL con parámetros dinámicos
     const url = `${baseUrl}?idEmp=&Letra=${params.letra}&Boca=${params.boca}&Numero=${params.numero}`;
+    console.log("[BusPack] Navigating to:", url);
 
     await page.goto(url, {
       waitUntil: "networkidle2",

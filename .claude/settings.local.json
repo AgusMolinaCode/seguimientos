@@ -4,7 +4,16 @@
       "Bash(git commit:*)",
       "Bash(npm view:*)",
       "Bash(nul)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(npm show:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(git add:*)",
+      "Bash(git push)",
+      "mcp__puppeteer__puppeteer_connect_active_tab",
+      "mcp__playwright__browser_install",
+      "mcp__playwright__browser_navigate"
     ],
     "deny": [],
     "ask": []
