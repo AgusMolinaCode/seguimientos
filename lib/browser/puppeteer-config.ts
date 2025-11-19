@@ -53,7 +53,7 @@ export async function launchBrowser() {
  * Configuración de timeouts recomendados según el entorno
  */
 export const BROWSER_TIMEOUTS = {
-  navigation: isVercelEnvironment() ? 15000 : 30000, // Vercel tiene límites más estrictos
-  wait: isVercelEnvironment() ? 10000 : 15000,
-  overall: isVercelEnvironment() ? 25000 : 45000,
+  navigation: isVercelEnvironment() ? 25000 : 30000, // Increased for Vercel serverless (60s max duration)
+  wait: isVercelEnvironment() ? 15000 : 15000,        // Increased wait timeout for dynamic content
+  overall: isVercelEnvironment() ? 50000 : 45000,     // Increased overall timeout (within 60s limit)
 };

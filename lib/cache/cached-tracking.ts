@@ -16,50 +16,26 @@ import type { ScraperResult } from "@/actions/types";
 // - Strategy: Public cache with medium-term revalidation
 
 /**
- * Cached Via Cargo tracking query
- * Cache duration: 4-6 hours (balance between freshness and performance)
+ * Via Cargo tracking query (no caching due to Puppeteer browser automation)
+ * Caching disabled: Browser automation incompatible with Next.js cache in serverless
  */
 async function getCachedViaCargoData(
   trackingNumber: string
 ): Promise<ScraperResult> {
-  "use cache";
-
-  // Custom cacheLife profile for tracking data
-  // stale: 300s (5 min) - how long before considering stale
-  // revalidate: 14400s (4 hours) - revalidate after 4 hours
-  // expire: 21600s (6 hours) - hard expire after 6 hours
-  cacheLife({
-    stale: 300,
-    revalidate: 14400,
-    expire: 21600,
-  });
-
-  // Tag for potential on-demand revalidation
-  cacheTag(`via-cargo-${trackingNumber}`);
-
+  // "use cache" disabled - Puppeteer browser automation incompatible with serverless caching
   return getViaCargoData(trackingNumber);
 }
 
 /**
- * Cached BusPack tracking query
- * Cache duration: 4-6 hours
+ * BusPack tracking query (no caching due to Puppeteer browser automation)
+ * Caching disabled: Browser automation incompatible with Next.js cache in serverless
  */
 async function getCachedBusPackData(
   letra: string,
   boca: string,
   numero: string
 ): Promise<ScraperResult> {
-  "use cache";
-
-  cacheLife({
-    stale: 300,
-    revalidate: 14400,
-    expire: 21600,
-  });
-
-  const trackingId = `${letra}-${boca}-${numero}`;
-  cacheTag(`buspack-${trackingId}`);
-
+  // "use cache" disabled - Puppeteer browser automation incompatible with serverless caching
   return trackBusPack({ letra, boca, numero });
 }
 
@@ -84,22 +60,13 @@ async function getCachedOCAData(
 }
 
 /**
- * Cached Andreani tracking query
- * Cache duration: 4-6 hours
+ * Andreani tracking query (no caching due to Puppeteer browser automation)
+ * Caching disabled: Browser automation incompatible with Next.js cache in serverless
  */
 async function getCachedAndreaniData(
   trackingNumber: string
 ): Promise<ScraperResult> {
-  "use cache";
-
-  cacheLife({
-    stale: 300,
-    revalidate: 14400,
-    expire: 21600,
-  });
-
-  cacheTag(`andreani-${trackingNumber}`);
-
+  // "use cache" disabled - Puppeteer browser automation incompatible with serverless caching
   return trackAndreani(trackingNumber);
 }
 
