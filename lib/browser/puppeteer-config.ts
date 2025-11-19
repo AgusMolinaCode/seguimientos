@@ -6,29 +6,23 @@ function isVercelEnvironment(): boolean {
 }
 
 /**
- * URL del binario remoto de Chromium para Vercel
- * Usar chromium-min con binario remoto evita problemas de bibliotecas compartidas
- */
-const CHROMIUM_REMOTE_EXECUTABLE =
-  "https://github.com/Sparticuz/chromium/releases/download/v138.0.0/chromium-v138.0.0-pack.tar";
-
-/**
  * Lanza el browser con la configuración correcta según el entorno
  * - Local: usa puppeteer con Chrome local
- * - Vercel: usa puppeteer-core con chromium-min y binario remoto
+ * - Vercel: usa puppeteer-core con @sparticuz/chromium
  */
 export async function launchBrowser() {
   const isVercel = isVercelEnvironment();
 
   if (isVercel) {
-    // Configuración para Vercel (serverless) usando chromium-min con binario remoto
+    // Configuración para Vercel (serverless) usando @sparticuz/chromium
     const puppeteerCore = await import("puppeteer-core");
-    const chromium = await import("@sparticuz/chromium-min");
+    const chromium = await import("@sparticuz/chromium");
 
     return puppeteerCore.default.launch({
       args: chromium.default.args,
-      executablePath: await chromium.default.executablePath(CHROMIUM_REMOTE_EXECUTABLE),
-      headless: true,
+      defaultViewport: chromium.default.defaultViewport,
+      executablePath: await chromium.default.executablePath(),
+      headless: chromium.default.headless,
     });
   } else {
     // Configuración para desarrollo local
