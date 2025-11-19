@@ -10,7 +10,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Seguimiento de Envíos Argentina',
+    default: 'Seguimiento de Envíos Argentina ',
     template: '%s | Seguimiento de Envíos'
   },
   description: 'Rastrea tus envíos en tiempo real de Correo Argentino, Via Cargo, BusPack, OCA y Andreani. Seguimiento gratuito y actualizado de paquetes en Argentina.',
