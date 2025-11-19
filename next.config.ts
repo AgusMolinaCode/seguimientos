@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   serverExternalPackages: [
     "puppeteer-core",
-    "@sparticuz/chromium-min",
+    "@sparticuz/chromium",
   ],
 };
 

@@ -16,10 +16,10 @@ export async function launchBrowser() {
   if (isVercel) {
     // Configuración para Vercel (serverless) - SIN puppeteer-extra para evitar errores de bundling
     const puppeteerCore = await import("puppeteer-core");
-    const chromium = await import("@sparticuz/chromium-min");
+    const chromium = await import("@sparticuz/chromium");
 
     console.log("[Puppeteer] Environment: Vercel serverless");
-    console.log("[Puppeteer] Using @sparticuz/chromium-min (puppeteer-core only)");
+    console.log("[Puppeteer] Using @sparticuz/chromium (standard version)");
 
     try {
       const execPath = await chromium.default.executablePath();
