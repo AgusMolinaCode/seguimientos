@@ -1,5 +1,3 @@
-import type { Browser } from "puppeteer-core";
-
 /**
  * Detecta si está corriendo en Vercel (producción serverless)
  */
@@ -9,10 +7,10 @@ function isVercelEnvironment(): boolean {
 
 /**
  * Lanza el browser con la configuración correcta según el entorno
- * - Local: usa puppeteer-core con Chrome local
+ * - Local: usa puppeteer con Chrome local
  * - Vercel: usa @sparticuz/chromium para serverless
  */
-export async function launchBrowser(): Promise<Browser> {
+export async function launchBrowser() {
   const isVercel = isVercelEnvironment();
 
   if (isVercel) {
@@ -21,9 +19,9 @@ export async function launchBrowser(): Promise<Browser> {
     const chromium = await import("@sparticuz/chromium");
 
     return puppeteerCore.default.launch({
-      args: chromium.default.args,
+      args: [...chromium.default.args, '--disable-gpu'],
       executablePath: await chromium.default.executablePath(),
-      headless: true,
+      headless: chromium.default.headless,
     });
   } else {
     // Configuración para desarrollo local

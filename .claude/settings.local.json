@@ -1,30 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "mcp__playwright__browser_navigate",
-      "mcp__playwright__browser_wait_for",
-      "mcp__playwright__browser_take_screenshot",
-      "mcp__playwright__browser_evaluate",
-      "mcp__playwright__browser_network_requests",
-      "mcp__playwright__browser_select_option",
-      "mcp__playwright__browser_type",
-      "mcp__playwright__browser_click",
-      "mcp__playwright__browser_close",
-      "Bash(npm install:*)",
-      "Bash(npx tsc:*)",
-      "mcp__playwright__browser_snapshot",
-      "Bash(npm uninstall:*)",
-      "mcp__playwright__browser_fill_form",
-      "Bash(node -e:*)",
-      "Bash(npm run build:*)",
-      "Bash(curl:*)",
-      "Bash(npm run dev:*)",
-      "mcp__playwright__browser_console_messages",
-      "mcp__sequential-thinking__sequentialthinking",
-      "Bash(git checkout:*)",
-      "Bash(git add:*)",
-      "Bash(git push:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nfix: configure puppeteer-core and @sparticuz/chromium for Vercel serverless\n\n- Use puppeteer-core instead of puppeteer in production\n- Properly configure @sparticuz/chromium.executablePath()\n- Dynamic imports for environment-specific puppeteer loading\n- Remove unsupported defaultViewport property from chromium config\n\nThis fixes the \"brotli files\" error in Vercel serverless functions.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

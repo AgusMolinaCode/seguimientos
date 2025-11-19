@@ -30,7 +30,7 @@ export async function scrapeBusPack(
 
 
     // Extraer datos de la página
-    const data = await page.evaluate(() => {
+    const data = await (page as any).evaluate(() => {
       // Función auxiliar para extraer texto limpio
       const getText = (element: Element | null): string => {
         return element?.textContent?.trim() || "";

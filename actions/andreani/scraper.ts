@@ -25,7 +25,7 @@ export async function scrapeAndreani(
     });
 
     // Extract tracking data
-    const trackingData = await page.evaluate(() => {
+    const trackingData = await (page as any).evaluate(() => {
       // Get current status
       const statusElement = document.querySelector(
         '[data-testid="tracking-state"]'

@@ -44,7 +44,7 @@ export async function scrapeViaCargo(
 
 
     // Extraer datos del frame
-    const data = await targetFrame.evaluate(() => {
+    const data = await (targetFrame as any).evaluate(() => {
       const doc = document;
 
       // Función auxiliar para extraer texto
