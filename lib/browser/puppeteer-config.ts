@@ -24,6 +24,28 @@ export async function launchBrowser() {
     try {
       const execPath = await chromium.default.executablePath();
       console.log("[Puppeteer] ✅ Chromium executable path:", execPath);
+      console.log("[Puppeteer] Current working directory:", process.cwd());
+      
+      // Verificación de existencia del archivo (opcional, solo para debug)
+      const fs = await import("fs");
+      if (fs.existsSync(execPath)) {
+        console.log("[Puppeteer] ✅ Executable file exists at path");
+      } else {
+        console.error("[Puppeteer] ❌ Executable file DOES NOT exist at path");
+        // Intento de listar directorio para debug
+        try {
+           const path = await import("path");
+           const binDir = path.dirname(execPath);
+           if (fs.existsSync(binDir)) {
+             console.log("[Puppeteer] Bin dir contents:", fs.readdirSync(binDir));
+           } else {
+             console.log("[Puppeteer] Bin dir does not exist:", binDir);
+             console.log("[Puppeteer] node_modules contents:", fs.readdirSync("./node_modules").slice(0, 10));
+           }
+        } catch (e) {
+           console.error("[Puppeteer] Error listing files:", e);
+        }
+      }
 
       const browser = await puppeteerCore.default.launch({
         args: [
