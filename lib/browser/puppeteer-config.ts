@@ -8,9 +8,10 @@ function isVercelEnvironment(): boolean {
 /**
  * URL del binario remoto de Chromium para Vercel
  * Usar chromium-min con binario remoto evita problemas de bibliotecas compartidas
+ * Vercel uses x64 architecture by default
  */
 const CHROMIUM_REMOTE_EXECUTABLE =
-  "https://github.com/Sparticuz/chromium/releases/download/v138.0.0/chromium-v138.0.0-pack.tar";
+  "https://github.com/Sparticuz/chromium/releases/download/v138.0.2/chromium-v138.0.2-pack.x64.tar";
 
 /**
  * Lanza el browser con la configuración correcta según el entorno
