@@ -25,29 +25,44 @@ export async function scrapeOCA(
   trackingNumber: string
 ): Promise<ScraperResult> {
   try {
+    // Construir URL de la API XML de OCA (usar HTTPS en lugar de HTTP)
+    const apiUrl = `https://webservice.oca.com.ar/epak_tracking/Oep_TrackEPak.asmx/Tracking_Pieza_ConIdEstado?NumeroEnvio=${trackingNumber}`;
 
-    // Construir URL de la API XML de OCA
-    const apiUrl = `http://webservice.oca.com.ar/epak_tracking/Oep_TrackEPak.asmx/Tracking_Pieza_ConIdEstado?NumeroEnvio=${trackingNumber}`;
+    // Log para debugging
+    console.log(`OCA: Fetching tracking for ${trackingNumber}`);
 
-    // Hacer petición a la API
+    // Hacer petición a la API con timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 segundos timeout
+
     const response = await fetch(apiUrl, {
       method: "GET",
       headers: {
         "Accept": "application/xml, text/xml",
+        "User-Agent": "Mozilla/5.0 (compatible; SeguimientosApp/1.0)",
       },
-    });
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeoutId));
 
     if (!response.ok) {
+      console.error(`OCA API error: ${response.status} ${response.statusText}`);
       throw new Error(`API OCA error: ${response.status} ${response.statusText}`);
     }
 
     // Obtener el XML como texto
     const xmlText = await response.text();
 
+    // Log para debugging en desarrollo
+    if (process.env.NODE_ENV === "development") {
+      console.log("OCA API response length:", xmlText.length);
+      console.log("Response preview:", xmlText.substring(0, 200));
+    }
+
     // Parsear el XML manualmente (Next.js no tiene DOMParser en el servidor)
     const tables = parseOCAXML(xmlText);
 
     if (tables.length === 0) {
+      console.error("OCA: No se pudieron parsear datos del XML");
       return {
         success: false,
         error: "No se encontró información para este número de tracking. Verifica que sea correcto.",
@@ -116,12 +131,25 @@ export async function scrapeOCA(
     };
   } catch (error) {
     console.error("Error en scrapeOCA:", error);
+
+    // Manejar errores específicos
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        return {
+          success: false,
+          error: "La consulta a OCA tardó demasiado. Por favor, intenta nuevamente.",
+        };
+      }
+
+      return {
+        success: false,
+        error: `Error al obtener información de OCA: ${error.message}`,
+      };
+    }
+
     return {
       success: false,
-      error:
-        error instanceof Error
-          ? `Error al obtener información: ${error.message}`
-          : "Error desconocido al procesar la solicitud de OCA",
+      error: "Error inesperado al procesar la solicitud de OCA. Por favor, intenta nuevamente.",
     };
   }
 }
@@ -134,31 +162,48 @@ export async function scrapeOCA(
 function parseOCAXML(xmlText: string): OCATableData[] {
   const tables: OCATableData[] = [];
 
-  // Buscar todos los bloques <Table>...</Table>
-  const tableRegex = /<Table[^>]*>([\s\S]*?)<\/Table>/gi;
-  const tableMatches = xmlText.matchAll(tableRegex);
+  try {
+    // Buscar todos los bloques <Table>...</Table>
+    const tableRegex = /<Table[^>]*>([\s\S]*?)<\/Table>/gi;
+    const tableMatches = xmlText.matchAll(tableRegex);
 
-  for (const match of tableMatches) {
-    const tableContent = match[1];
-    const tableData: OCATableData = {};
+    let matchCount = 0;
+    for (const match of tableMatches) {
+      matchCount++;
+      const tableContent = match[1];
+      const tableData: OCATableData = {};
 
-    // Extraer cada campo del XML
-    const extractField = (fieldName: string): string | undefined => {
-      const fieldRegex = new RegExp(`<${fieldName}>([\\s\\S]*?)<\/${fieldName}>`, 'i');
-      const fieldMatch = tableContent.match(fieldRegex);
-      return fieldMatch ? fieldMatch[1].trim() : undefined;
-    };
+      // Extraer cada campo del XML
+      const extractField = (fieldName: string): string | undefined => {
+        const fieldRegex = new RegExp(`<${fieldName}>([\\s\\S]*?)<\/${fieldName}>`, 'i');
+        const fieldMatch = tableContent.match(fieldRegex);
+        return fieldMatch ? fieldMatch[1].trim() : undefined;
+      };
 
-    tableData.IdLogAccion = extractField('IdLogAccion');
-    tableData.NumeroEnvio = extractField('NumeroEnvio');
-    tableData.Motivo = extractField('Motivo');
-    tableData.Estado = extractField('Estado');
-    tableData.IdEstado = extractField('IdEstado');
-    tableData.Sucursal = extractField('Sucursal');
-    tableData.Sucursal_Direccion = extractField('Sucursal_Direccion');
-    tableData.Fecha = extractField('Fecha');
+      tableData.IdLogAccion = extractField('IdLogAccion');
+      tableData.NumeroEnvio = extractField('NumeroEnvio');
+      tableData.Motivo = extractField('Motivo');
+      tableData.Estado = extractField('Estado');
+      tableData.IdEstado = extractField('IdEstado');
+      tableData.Sucursal = extractField('Sucursal');
+      tableData.Sucursal_Direccion = extractField('Sucursal_Direccion');
+      tableData.Fecha = extractField('Fecha');
 
-    tables.push(tableData);
+      tables.push(tableData);
+    }
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(`OCA Parser: Found ${matchCount} table entries`);
+    }
+
+    if (matchCount === 0) {
+      console.error("OCA Parser: No <Table> tags found in XML");
+      if (process.env.NODE_ENV === "development") {
+        console.log("XML preview:", xmlText.substring(0, 500));
+      }
+    }
+  } catch (error) {
+    console.error("OCA Parser: Error parsing XML:", error);
   }
 
   return tables;
