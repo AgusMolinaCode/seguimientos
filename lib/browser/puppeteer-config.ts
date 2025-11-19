@@ -14,12 +14,12 @@ export async function launchBrowser() {
   const isVercel = isVercelEnvironment();
 
   if (isVercel) {
-    // Configuración para Vercel (serverless) usando @sparticuz/chromium con binario embebido
+    // Configuración para Vercel (serverless) usando @sparticuz/chromium-min con binario embebido
     const puppeteerCore = await import("puppeteer-core");
-    const chromium = await import("@sparticuz/chromium");
+    const chromium = await import("@sparticuz/chromium-min");
 
     console.log("[Puppeteer] Environment: Vercel serverless");
-    console.log("[Puppeteer] Using @sparticuz/chromium (embedded binary)");
+    console.log("[Puppeteer] Using @sparticuz/chromium-min (embedded binary)");
 
     try {
       const execPath = await chromium.default.executablePath();
