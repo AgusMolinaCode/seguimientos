@@ -5,5 +5,8 @@
     "editor.inlineSuggest.fontFamily": "JetBrains Mono",
     "debug.console.fontFamily": "JetBrains Mono",
     "scm.inputFontFamily": "JetBrains Mono",
-    "terminal.integrated.fontFamily": "JetBrains Mono"
+    "terminal.integrated.fontFamily": "JetBrains Mono",
+    "editor.fontLigatures": true,
+    "chat.fontFamily": "JetBrains Mono",
+    "chat.editor.fontFamily": "JetBrains Mono"
 }

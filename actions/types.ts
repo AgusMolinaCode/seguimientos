@@ -16,6 +16,7 @@ export interface TrackingInfo {
   timeline: TimelineEvent[];
   incidents: string;
   currentStatus?: string;
+  fetchedAt?: string; // Timestamp of when the data was fetched
 }
 
 export interface ScraperResult {

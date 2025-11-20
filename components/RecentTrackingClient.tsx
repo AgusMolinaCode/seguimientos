@@ -70,6 +70,34 @@ function isDelivered(status: string): boolean {
   return lowerStatus.includes("entregado") || lowerStatus.includes("entregada") || lowerStatus.includes("entrega en sucursal");
 }
 
+// Check if shipment is close to delivery
+function isCloseToDelivery(status: string, carrier: string): boolean {
+  const s = status.toLowerCase();
+  
+  if (carrier === "via-cargo") {
+    return s.includes("llegada a centro de distribucion") || s.includes("recibido en destino");
+  }
+  
+  if (carrier === "buspack") {
+    // User requested "En Agencia Origen", but also adding "En Agencia Destino" as it fits the intent better
+    return s.includes("en agencia origen") || s.includes("en agencia destino");
+  }
+  
+  if (carrier === "andreani") {
+    return s.includes("hoy te visitaremos") || s.includes("en sucursal");
+  }
+  
+  if (carrier === "correo-argentino") {
+    return s.includes("intento de entrega") || s.includes("en poder del distribuidor") || s.includes("en espera en sucursal");
+  }
+  
+  if (carrier === "oca") {
+    return s.includes("arribado a centro de distribución de destino") || s.includes("programado para visita a domicilio");
+  }
+  
+  return false;
+}
+
 // Pagination constant
 const ITEMS_PER_PAGE = 6;
 
@@ -186,7 +214,9 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
         <>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 px-2">
             {paginatedEntries.map((entry) => {
-            const delivered = isDelivered(entry.data.currentStatus || entry.lastStatus);
+            const status = entry.data.currentStatus || entry.lastStatus;
+            const delivered = isDelivered(status);
+            const closeToDelivery = !delivered && isCloseToDelivery(status, entry.carrier);
 
             return (
               <div
@@ -194,6 +224,8 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
                 className={`bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-5 border-2 ${
                   delivered
                     ? "border-green-400 bg-green-50/30"
+                    : closeToDelivery
+                    ? "border-amber-400 bg-amber-50/30"
                     : "border-gray-200"
                 }`}
               >
@@ -217,7 +249,12 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
                       trackingNumber={entry.trackingNumber}
                     />
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <div 
+                    className="flex items-center gap-1 text-xs text-gray-500 cursor-help"
+                    title={entry.data.fetchedAt 
+                      ? `Datos actualizados: ${new Date(entry.data.fetchedAt).toLocaleString()}` 
+                      : `Consulta realizada: ${new Date(entry.timestamp).toLocaleString()}`}
+                  >
                     <Clock className="w-3 h-3" />
                     <span>{formatTimestamp(entry.timestamp)}</span>
                   </div>
@@ -236,18 +273,28 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
                   <div className="flex items-start gap-2">
                     {delivered ? (
                       <PackageCheck className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    ) : closeToDelivery ? (
+                      <MapPin className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
                     ) : (
                       <MapPin className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                     )}
                     <div className="flex-1">
                       <p className={`text-sm font-medium line-clamp-2 ${
-                        delivered ? "text-green-700 font-semibold" : "text-gray-700"
+                        delivered 
+                          ? "text-green-700 font-semibold" 
+                          : closeToDelivery
+                          ? "text-amber-700 font-semibold"
+                          : "text-gray-700"
                       }`}>
                         {entry.lastStatus}
                       </p>
                       {entry.data.currentStatus && entry.data.currentStatus !== entry.lastStatus && (
                         <p className={`text-xs mt-1 ${
-                          delivered ? "text-green-600" : "text-gray-500"
+                          delivered 
+                            ? "text-green-600" 
+                            : closeToDelivery
+                            ? "text-amber-600"
+                            : "text-gray-500"
                         }`}>
                           {entry.data.currentStatus}
                         </p>
@@ -267,7 +314,11 @@ export function RecentTrackingClient({ entries }: RecentTrackingClientProps) {
                 <div className="mt-4 pt-3 border-t border-gray-200">
                   <Link
                     href={`/${entry.carrier}?tracking=${encodeURIComponent(entry.trackingNumber)}`}
-                    className="flex items-center justify-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                    className={`flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
+                      closeToDelivery 
+                        ? "text-amber-600 hover:text-amber-700" 
+                        : "text-blue-600 hover:text-blue-700"
+                    }`}
                   >
                     Ver más
                     <ArrowRight className="w-4 h-4" />

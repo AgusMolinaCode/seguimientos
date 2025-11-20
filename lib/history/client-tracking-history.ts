@@ -112,3 +112,30 @@ export function clearHistory(): void {
     console.error("Error clearing history:", error);
   }
 }
+
+/**
+ * Update only the data of a history entry without changing timestamp
+ */
+export function updateHistoryData(
+  id: string,
+  data: TrackingInfo
+): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    const history = getHistory();
+    const index = history.findIndex((entry) => entry.id === id);
+
+    if (index !== -1) {
+      history[index] = {
+        ...history[index],
+        lastStatus: data.currentStatus || data.timeline[0]?.status || "Unknown",
+        data,
+      };
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    }
+  } catch (error) {
+    console.error("Error updating history data:", error);
+  }
+}
+

@@ -123,6 +123,7 @@ export async function scrapeOCA(
       incidents: lastEvent.Motivo && lastEvent.Motivo !== "Sin Motivo"
         ? lastEvent.Motivo
         : "",
+      fetchedAt: new Date().toISOString(),
     };
 
     return {

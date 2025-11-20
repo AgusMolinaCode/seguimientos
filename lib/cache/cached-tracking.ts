@@ -49,9 +49,9 @@ async function getCachedOCAData(
   "use cache";
 
   cacheLife({
-    stale: 300,
-    revalidate: 14400,
-    expire: 21600,
+    stale: 300, // 5 minutes stale allowed
+    revalidate: 900, // 15 minutes revalidation (was 4 hours)
+    expire: 3600, // 1 hour expiration (was 6 hours)
   });
 
   cacheTag(`oca-${trackingNumber}`);
@@ -80,9 +80,9 @@ async function getCachedCorreoArgentinoData(
   "use cache";
 
   cacheLife({
-    stale: 300,
-    revalidate: 14400,
-    expire: 21600,
+    stale: 300, // 5 minutes stale allowed
+    revalidate: 900, // 15 minutes revalidation (was 4 hours)
+    expire: 3600, // 1 hour expiration (was 6 hours)
   });
 
   cacheTag(`correo-argentino-${trackingNumber}`);

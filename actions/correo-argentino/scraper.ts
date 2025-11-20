@@ -121,6 +121,7 @@ export async function scrapeCorreoArgentino(
       incidents: latestEvent.estado && latestEvent.estado !== currentStatus
         ? latestEvent.estado
         : "",
+      fetchedAt: new Date().toISOString(),
     };
 
     return {
