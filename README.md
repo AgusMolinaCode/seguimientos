@@ -16,6 +16,7 @@ El proyecto está construido sobre un stack tecnológico de vanguardia, prioriza
 *   **Tailwind CSS 4:** Para un diseño responsivo, moderno y altamente personalizable.
 *   **GSAP & tw-animate-css:** Potenciando la experiencia visual con animaciones suaves y profesionales.
 *   **Radix UI:** Componentes accesibles y robustos para la construcción de la interfaz.
+
 *   **Lucide React:** Iconografía limpia y consistente.
 
 ### ⚙️ Backend & Lógica
