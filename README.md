@@ -36,11 +36,11 @@ La plataforma integra consultas directas a los sistemas de seguimiento de las si
 
 | Empresa | Tipo de Servicio |
 | :--- | :--- |
-| **🔵 Andreani** | Logística y correo privado líder. |
+| **🔵 Andreani** | Logística y correo privado. |
 | **🟡 Mercado Libre / Correo Arg.** | Envíos de e-commerce y correo nacional. |
-| **🟣 OCA** | Soluciones logísticas y postales. |
-| **🔴 Via Cargo** | Envíos de encomiendas y paquetería federal. |
-| **🟢 BusPack** | Logística express en ómnibus. |
+| **🟣 OCA** | Logística y correo privado. |
+| **🔴 Via Cargo** | Envíos de encomiendas. |
+| **🟢 BusPack** | Envíos de encomiendas. |
 
 ---
 
