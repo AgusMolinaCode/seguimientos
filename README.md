@@ -5,6 +5,7 @@
 Este proyecto es una solución moderna y eficiente para centralizar el seguimiento de paquetería de múltiples empresas de logística en Argentina. Diseñado con una interfaz limpia y una arquitectura robusta, permite consultar el estado de tus envíos sin necesidad de navegar por múltiples sitios web.
 
 
+
 ---
 
 ## 🚀 Tecnologías Utilizadas
