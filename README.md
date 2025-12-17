@@ -8,6 +8,7 @@ Este proyecto es una solución moderna y eficiente para centralizar el seguimien
 
 ## 🚀 Tecnologías Utilizadas
 
+
 El proyecto está construido sobre un stack tecnológico de vanguardia, priorizando el rendimiento, la experiencia de usuario y la capacidad de ejecución en entornos serverless.
 
 ### 🎨 Frontend & UI
