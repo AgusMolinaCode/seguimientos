@@ -38,7 +38,7 @@ export function ViaCargoForm({ onSubmit, loading = false, initialValue = "" }: V
   });
 
   const handleCopy = async () => {
-    const value = form.getValues("trackingNumberrr");
+    const value = form.getValues("trackingNumberr");
     if (value) {
       await navigator.clipboard.writeText(value);
       setCopied(true);
