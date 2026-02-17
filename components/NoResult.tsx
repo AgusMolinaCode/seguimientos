@@ -18,7 +18,7 @@ const NoResult = ({ result }: TrackingResultProps) => {
           <p className="font-semibold mb-2">Verifica que:</p>
           <ul className="list-disc list-inside space-y-1">
             <li>El número de envío sea correcto</li>
-            <li>No tenga espacios ni caracteres especialesss</li>
+            <li>No tenga espacios ni caracteres especialess</li>
           </ul>
         </div>
       </div>
